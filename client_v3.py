@@ -4,6 +4,7 @@ import sys
 import time
 import atexit
 import threading
+import MySQLdb
 from DataFactory import DataFactory
 
 SERVER_ADDRESS = '172.24.1.1'
@@ -11,6 +12,33 @@ CLIENT_ADDRESS = '172.24.1.78'
 SID = 1
 DATA_PORT = 10000
 HELLO_PORT = 5000
+
+TABLE_NAME = 'generated_sensor_data'
+DATABASE_NAME = 'sdtn'
+MYSQL_USER = 'sdtn'
+MYSQL_PASSWORD = 'thesisit'
+
+
+def initializeDB():
+    db = MySQLdb.connect('localhost', MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME)
+    return db
+
+def insertMessage(data):
+    db = initializeDB()
+    cursor = db.cursor()
+    sql = "INSERT INTO generated_sensor_data (seq, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
+    print sql
+    try:
+        print 'executing sql'
+        cursor.execute(sql)
+        print 'commiting db'        
+        db.commit()
+        print 'committed'
+    except:
+        print 'rollback'
+        db.rollback()
+    
+    db.close()
 
 def createSocket(address, port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -97,8 +125,10 @@ def test():
 
     while True:
         time.sleep(5)
-        factory.getData()
-        
+        data = factory.getData()
+        data = data.split()
+        db = initializeDB()
+        insertMessage(data)        
 if __name__ == "__main__":
     test()
 
