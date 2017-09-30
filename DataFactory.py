@@ -7,11 +7,6 @@
 import time
 
 class DataFactory:
-    DROP_FIRST_PROTOCOL = 0
-    DROP_LAST_PROTOCOL = 1
-    DROP_RANDOM_PROTOCOL = 2
-    DROP_CURRENT_PROTOCOL = 3
-
     def __init__(self, dataSize, timeToGenerate):
         self.dataSize = dataSize
         self.timeToGenerate = timeToGenerate
