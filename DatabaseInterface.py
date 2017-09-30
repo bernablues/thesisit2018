@@ -14,6 +14,7 @@ class DatabaseInterface:
     def insertMessage(self, data):
         db = self.__openDatabase()
         cursor = db.cursor()
+        # To be improved, assumes column names. Could use dictionaries for key->value pairs.
         sql = "INSERT INTO " + self.table + " (seq, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
         try:
             cursor.execute(sql)
