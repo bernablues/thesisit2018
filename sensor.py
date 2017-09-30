@@ -16,6 +16,8 @@ DATABASE_NAME = 'sdtn'
 MYSQL_USER = 'sdtn'
 MYSQL_PASSWORD = 'thesisit'
 
+conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
+
 
 def initializeDB():
     db = MySQLdb.connect('localhost', MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME)
@@ -39,16 +41,23 @@ def insertMessage(data):
     db.close()
 
 def confirmAcknowledgement(sock, seq):
-    sock.settimeout(5)
-
-    try:
-        data, addr = sock.recvfrom(16)
-    except:
-        sock.settimeout(None)
-        return False
-
-    sock.settimeout(None)
-
+    terminated = False
+    data = False
+    while True:
+        try:
+            sock.settimeout(1)
+            data, addr = sock.recvfrom(16) # throws exception when timeout
+        except:
+            sock.settimeout(None)
+            terminated = conman.acknowledgementTimeout()
+            
+        if terminated:
+            return False
+        elif data:
+            break
+        else:
+            sendMessage(sock, seq)
+        
     print "Received message:", data
     data = data.split()
     ackSeq = int(data[1])
@@ -69,32 +78,20 @@ def sendMessage(sock, seq):
     sock.sendto(message, (SERVER_ADDRESS, DATA_PORT))
 
 def main():
-    conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
+    
     dataSocket = conman.getDataSocket()
     seq = 1
-    failedAck = 0
-
-    muleAddress = conman.listenForHello()
 
     while True:
+        if not conman.isConnected():
+            conman.listenForHello()
         time.sleep(2)
         try:
             sendMessage(dataSocket, seq)
             if confirmAcknowledgement(dataSocket, seq):
-                failedAck = 0
                 seq += 1
-            else: 
-                failedAck += 1
-                if failedAck == 5:
-                    failedAck = 0
-                    muleAddress = conman.listenForHello()
-                continue
         
         except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
-            failedAck += 1
-            if failedAck == 5:
-                failedAck = 0
-                muleAddress = conman.listenForHello()
             print "Not reachable\n"
     
 def test():
