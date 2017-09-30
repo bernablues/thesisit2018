@@ -2,7 +2,6 @@ import os
 import sys
 import time
 import threading
-import MySQLdb
 from DataFactory import DataFactory
 from ConnectionManager import ConnectionManager
 
