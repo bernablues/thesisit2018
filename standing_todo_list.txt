@@ -1,0 +1,8 @@
+As of Oct, 2, 2017 Monday
+
+Create class diagrams for easier tracking of system architecture
+    -consult Mam Dalin for more optimization of system architecture
+
+Keep track of:
+    Raspbian OS Version difference
+        affects networking management stuff
