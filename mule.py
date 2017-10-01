@@ -35,16 +35,11 @@ def createSocket(address, port):
 def insertMessage(data):
     db = initializeDB()
     cursor = db.cursor()
-    print "Initialized DB"
-    sql = "INSERT INTO sensor_data (sensor_id, seq) VALUES (" + data[1] + "," + data[2] + ")"
-    print sql
-    
+    sql = "INSERT INTO sensor_data (sensor_id, seq, message) VALUES (" + data[1] + "," + data[2] + "," + data[3] +")"
+
     try:
-        print "Executing SQL"
         cursor.execute(sql)
-        print "Committing database"
         db.commit()
-        print "Committed"
     except:
         db.rollback()
     
@@ -53,7 +48,7 @@ def insertMessage(data):
 
 def processMessage(message):
     data = message.split()
-    print "Type:", data[0], "SID:", data[1], "SEQ:", data[2], "\n"
+    print "Type:", data[0], "SID:", data[1], "SEQ:", data[2], "Payload:", data[3], "\n"
     insertMessage(data)
     return True, int(data[0]), data[1], int(data[2])
 
@@ -92,8 +87,6 @@ def main():
 
     helloThread = startHelloThread()
     
-    awaitingSeq = 1
-
     try:
         while True:
             time.sleep(1)
@@ -103,9 +96,8 @@ def main():
                 success, ptype, recvMessage, recvSeq = processMessage(data)
                 if ptype != 1:
                     print "Expecting Type: 1, received Type:", ptype
-                elif recvSeq == awaitingSeq:
-                    acknowledge(sock, awaitingSeq)
-                    awaitingSeq += 1
+                else:
+                    acknowledge(sock, recvSeq)
             else:
                 print 'Disconnected?'
                 break

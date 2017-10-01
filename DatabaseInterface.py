@@ -19,12 +19,55 @@ class DatabaseInterface:
         try:
             cursor.execute(sql)
             db.commit()
-            print "Inserted", data, "on DB" 
         except:
             print 'DB Rollback'
             db.rollback()
         
         db.close()
 
-    # def getRowCount
-    # def getData
+    def getRowCount(self):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+
+        sql = "SELECT COUNT(*) FROM " + self.table
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchone()
+        except:
+            print "DB Error"
+
+        db.close()
+
+        return results
+
+    def getData(self, numberOfRows):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+
+        sql = "SELECT seq, payload FROM " + self.table + " LIMIT " + str(numberOfRows)
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+        except:
+            print "DB Error"
+
+        db.close()
+
+        return results
+
+    def deleteData(self, numberOfRows):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+
+        sql = "DELETE FROM " + self.table + " LIMIT " + str(numberOfRows)
+
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except:
+            db.rollback()
+            print "DB Error"
+
+        db.close()

@@ -7,7 +7,8 @@
 import time
 
 class DataFactory:
-    def __init__(self, dataSize, timeToGenerate):
+    def __init__(self, dataSize, timeToGenerate, dbInterface):
+        self.dbInterface = dbInterface
         self.dataSize = dataSize
         self.timeToGenerate = timeToGenerate
         self.data = []
@@ -20,11 +21,11 @@ class DataFactory:
 
     def generateEntry(self, seq):
         payload = 'x' * self.dataSize
-        entry = str(seq) + ' ' + payload
+        entry = [str(seq), payload]
         return entry
 
     def pushEntry(self, entry):
-        self.data.append(entry) # Provide DB Interface
+        self.dbInterface.insertMessage(entry)
         return True        
 
     def start(self):
