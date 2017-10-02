@@ -3,6 +3,7 @@ import sys
 import time
 import threading
 from DataFactory import DataFactory
+from DatabaseInterface import DatabaseInterface
 from ConnectionManager import ConnectionManager
 
 SERVER_ADDRESS = '172.24.1.1'
@@ -16,35 +17,15 @@ MYSQL_USER = 'sdtn'
 MYSQL_PASSWORD = 'thesisit'
 
 conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
+dbi = DatabaseInterface(TABLE_NAME, DATABASE_NAME, MYSQL_USER, MYSQL_PASSWORD)
+dataFactory = DataFactory(5, 1, dbi)
 
-
-def initializeDB():
-    db = MySQLdb.connect('localhost', MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME)
-    return db
-
-def insertMessage(data):
-    db = initializeDB()
-    cursor = db.cursor()
-    sql = "INSERT INTO generated_sensor_data (seq, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
-    print sql
-    try:
-        print 'executing sql'
-        cursor.execute(sql)
-        print 'commiting db'        
-        db.commit()
-        print 'committed'
-    except:
-        print 'rollback'
-        db.rollback()
-    
-    db.close()
-
-def confirmAcknowledgement(sock, seq):
+def confirmAcknowledgement(sock, message):
     terminated = False
     data = False
     while True:
         try:
-            sock.settimeout(1)
+            sock.settimeout(3)
             data, addr = sock.recvfrom(16) # throws exception when timeout
         except:
             sock.settimeout(None)
@@ -55,7 +36,7 @@ def confirmAcknowledgement(sock, seq):
         elif data:
             break
         else:
-            sendMessage(sock, seq)
+            sendMessage(sock, 1, message)
         
     print "Received message:", data
     data = data.split()
@@ -65,30 +46,50 @@ def confirmAcknowledgement(sock, seq):
 
     if pType != 0:
         return False
-    elif ackSeq != seq:
+    elif ackSeq != message[0]:
         return False
     else:
         return True
 
-def sendMessage(sock, seq):
-    message = "1 " + str(SID) + " " + str(seq)
+def sendMessage(sock, pType, message):
+    message = str(pType) + " " + str(SID) + " " + str(message[0]) + " " + str(message[1])
     print >> sys.stderr, 'Sending', message
     print ""
     sock.sendto(message, (SERVER_ADDRESS, DATA_PORT))
 
+def processMessage(message):
+    data = message.split()
+    print "Type:", data[0], "SID:", data[1], "SEQ:", data[2], "Payload:", data[3], "\n"
+    dbi.insertMessage(data)
+    return True, int(data[0]), data[1], int(data[2])
+
+
+def acknowledge(sock, sequenceNumber):
+    acknowledgement = "0 " + str(sequenceNumber)
+    sock.sendto(acknowledgement, ('172.24.1.1', DATA_PORT))
+    print 'Sending', acknowledgement, "\n"
+
 def main():
-    
+
     dataSocket = conman.getDataSocket()
-    seq = 1
 
     while True:
         if not conman.isConnected():
             conman.listenForHello()
         time.sleep(2)
         try:
-            sendMessage(dataSocket, seq)
-            if confirmAcknowledgement(dataSocket, seq):
-                seq += 1
+            sendMessage(dataSocket, 3, [1, ''])
+            data, addr = dataSocket.recvfrom(4082)
+            if data:
+                print 'Received messaged:', data
+                success, ptype, recvMessage, recvSeq = processMessage(data)
+                if ptype != 1:
+                    print "Expecting Type: 1, received Type:", ptype
+                else:
+                    acknowledge(dataSocket, recvSeq)
+            else:
+                print 'Disconnected?'
+                break
         
         except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
             print "Not reachable\n"
