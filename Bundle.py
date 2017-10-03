@@ -4,7 +4,8 @@ class Bundle:
         bundleData = self.stringToBundle(string)
         self.type = bundleData[0]
         self.sid = bundleData[1]
-        self.payload = bundleData[2]
+        self.seq = bundleData[2]
+        self.payload = bundleData[3]
 
     def getBundleProperties(self):
         return [self.type, self.sid, self.payload]
@@ -15,6 +16,9 @@ class Bundle:
     def getSID(self):
         return self.sid
 
+    def getSeq(self):
+        return self.seq
+
     def getPayload(self):
         return self.payload
 
@@ -23,3 +27,6 @@ class Bundle:
 
     def toString(self):
         return str(self.type) + ' ' + str(self.sid) + self.payload
+
+    def toData(self):
+        return [str(self.sid), str(self.payload)]

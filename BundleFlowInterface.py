@@ -4,9 +4,10 @@ class BundleFlowInterface:
         self.sock = sock
         self.port = int(self.sock.getsockname()[1])
 
-    def sendBundle(self, bundleString):
-        print 'Sending', bundleString, 'to:', self.toAddress, self.port
+    def sendBundle(self, bundle):
+        print 'Sending', bundle, 'to:', self.toAddress, self.port
         print ""
+        bundleString = bundle.toString()
         self.sock.sendto(bundleString, (self.toAddress, self.port))
     
     def receiveBundle(self, timeout=None):

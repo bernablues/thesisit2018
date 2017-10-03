@@ -9,67 +9,78 @@ import random
 class DataManager:
     DROP_FIRST_PROTOCOL = 0
     DROP_LAST_PROTOCOL = 1
-    DROP_RANDOM_PROTOCOL = 2
+    # DROP_RANDOM_PROTOCOL = 2
     DROP_CURRENT_PROTOCOL = 3
 
-    def __init__(self, maxEntries, droppingProtocol):
+    def __init__(self, maxEntries, droppingProtocol, dbInterface):
         self.maxEntries = maxEntries
         self.droppingProtocol = droppingProtocol
-        self.data = []
+        self.dbInterface = dbInterface
+        self.equalizeMaxEntries() #Needed for drop current protocol
 
     def printProperties(self):
         print 'Maximum number of entries:', self.maxEntries
         print 'Chosen dropping protocol:', self.droppingProtocol
         print '========'
 
-    def pushEntry(self, entry):
-        self.data.append(entry)
+    def equalizeMaxEntries(self):
+        while self.isBufferFull():
+            self.dropLast()
+        return True
+
+    def insertData(self, data):
+        if self.isBufferFull():
+            self.dropData()
+            return False
+        self.dbInterface.insertRow(data)
         return True        
 
     def printData(self):
-        print 'SEQ PAYLOAD'
-        for i in self.data:
-            print i
-        print '----'
+        pass
 
     def dropFirst(self):
-        first = self.data[0]
-        del self.data[0]
-
+        first = self.dbInterface.getRows(1)
+        self.dbInterface.deleteRows(1)
         return first
 
     def dropLast(self):
-        last = self.data[-1]
-        del self.data[-1]
-
+        last = self.dbInterface.getRows(1, True)
+        self.dbInterface.deleteRows(1, True)
         return last
 
-    def dropRandom(self):
-        index = random.randint(0, self.maxEntries - 1)
-        entry = self.data[index]
-        del self.data[index]
+    # def dropRandom(self):
+    #     index = random.randint(0, self.maxEntries - 1)
+    #     data = self.dbInterface.getNthRow(n)
+    #     del self.data[index]
 
-        return entry
+    #     return entry
 
-    def dropEntry(self):
-        droppedEntry = None
+    def dropData(self):
+        droppedData = None
         if self.droppingProtocol == self.DROP_FIRST_PROTOCOL:
-            droppedEntry = self.dropFirst()
+            droppedData = self.dropFirst()
         elif self.droppingProtocol == self.DROP_LAST_PROTOCOL:
-            droppedEntry = self.dropLast()
-        elif self.droppingProtocol == self.DROP_RANDOM_PROTOCOL:
-            droppedEntry = self.dropRandom()      
-        print 'Dropped:', droppedEntry
-        return droppedEntry
+            droppedData = self.dropLast()
+        # elif self.droppingProtocol == self.DROP_RANDOM_PROTOCOL:
+        #     droppedData = self.dropRandom()     
+        elif self.droppingProtocol == self.DROP_CURRENT_PROTOCOL:
+            droppedData = 'Current' 
+        print 'Dropped:', droppedData
+        return droppedData
 
     def isBufferFull(self):
-        if self.maxEntries == len(self.data):
+        currentEntries = self.dbInterface.getRowCount()
+        print self.maxEntries, currentEntries
+        if self.maxEntries < currentEntries:
             return True
         else:
             return False
 
-    def getData(self):
-        data = self.data[0]
-        del self.data[0]
-        print 'Sent data:', data
+    def getData(self, numberOfData, deleteData = False):
+        data = self.dbInterface.getRows(numberOfData)
+        if deleteData:
+            self.dbInterface.deleteRows(numberOfData)
         return data
+
+    def getAllData(self):
+        return self.dbInterface.getAllRows()
