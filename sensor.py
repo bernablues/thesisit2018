@@ -5,6 +5,7 @@ import threading
 from DataFactory import DataFactory
 from DatabaseInterface import DatabaseInterface
 from ConnectionManager import ConnectionManager
+from BundleFlowInterface import BundleFlowInterface
 
 SERVER_ADDRESS = '172.24.1.1'
 SID = 1
@@ -19,8 +20,9 @@ MYSQL_PASSWORD = 'thesisit'
 conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
 dbi = DatabaseInterface(TABLE_NAME, DATABASE_NAME, MYSQL_USER, MYSQL_PASSWORD)
 dataFactory = DataFactory(5, 1, dbi)
+dataSocket = conman.getDataSocket()
 
-def confirmAcknowledgement(sock, message):
+def confirmAcknowledgement(sock, message, bfi):
     terminated = False
     data = False
     while True:
@@ -36,7 +38,7 @@ def confirmAcknowledgement(sock, message):
         elif data:
             break
         else:
-            sendMessage(sock, 1, message)
+            bfi.sendBundle(message)
         
     print "Received message:", data
     data = data.split()
@@ -51,29 +53,24 @@ def confirmAcknowledgement(sock, message):
     else:
         return True
 
-def sendMessage(sock, pType, message):
-    message = str(pType) + " " + str(SID) + " " + str(message[0]) + " " + str(message[1])
-    print >> sys.stderr, 'Sending', message
-    print ""
-    sock.sendto(message, (SERVER_ADDRESS, DATA_PORT))
-
 def main():
     
     dataFactoryThread = threading.Thread(target=dataFactory.start, args=())
     dataFactoryThread.daemon = True
     dataFactoryThread.start()
-
-    dataSocket = conman.getDataSocket()
-
+    
     while True:
         if not conman.isConnected():
             conman.listenForHello()
+            bfi = BundleFlowInterface(dataSocket, conman.getConnectedTo())
         time.sleep(2)
         try:
             message = dbi.getData(1)
             dbi.deleteData(1)
-            sendMessage(dataSocket, 1, message[0])
-            confirmAcknowledgement(dataSocket, message[0])
+            seq, payload = message[0]
+            bundle = str(seq) + ' 1 X ' + payload
+            bfi.sendBundle(bundle)
+            confirmAcknowledgement(dataSocket, bundle, bfi)
         
         except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
             print "Not reachable\n"

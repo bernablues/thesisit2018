@@ -4,7 +4,6 @@
 # dropping protocol to be used (First, Last, Random, Current),
 # number of seconds to generate new entry,
 # number of seconds to send data
-import time
 import random
 
 class DataManager:

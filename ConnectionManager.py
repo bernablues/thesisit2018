@@ -1,6 +1,7 @@
 import socket
 import fcntl
 import struct
+from BundleFlowInterface import BundleFlowInterface
 
 class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort):
@@ -14,6 +15,8 @@ class ConnectionManager:
         self.dataSocket = None
         self.helloSocket = None
         self.__initializeSockets()
+
+        self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
 
         self.connected = False
         self.connectedTo = False
@@ -62,14 +65,18 @@ class ConnectionManager:
     def getHelloSocket(self):
         return self.helloSocket
 
+    def getConnectedTo(self):
+        return self.connectedTo
+
     def isConnected(self):
         return self.connected
 
     def listenForHello(self):
         print "Listening for hello..."
-        data, addr = self.helloSocket.recvfrom(4)
-        print "Received hello:", data, 'from', addr
-        self.__initializeConnection(addr)
+        bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
+        fromAddress, fromPort = fromSocket
+        print "Received hello:", bundleData, 'from', fromAddress
+        self.__initializeConnection(fromAddress)
 
     def acknowledgementTimeout(self):
         self.currentAckTimeout += 1
