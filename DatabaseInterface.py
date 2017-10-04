@@ -60,7 +60,7 @@ class DatabaseInterface:
 
         db.close()
 
-        return list(results)
+        return results
 
     def getNthRow(self, n):
         db = self.__openDatabase()
@@ -77,7 +77,7 @@ class DatabaseInterface:
 
         db.close()
 
-        return list(results)
+        return results
 
     def getAllRows(self, isReversed = False):
         db = self.__openDatabase()
@@ -96,7 +96,7 @@ class DatabaseInterface:
 
         db.close()
 
-        return list(results)
+        return results
 
     def deleteRows(self, numberOfRows, isReversed = False):
         db = self.__openDatabase()

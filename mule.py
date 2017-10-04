@@ -1,161 +1,75 @@
-import socket
+import os
 import sys
-# import atexit
-import threading
 import time
-import MySQLdb
-from ConnectionManager import ConnectionManager
+import threading
+from DataFactory import DataFactory
 from DatabaseInterface import DatabaseInterface
+from ConnectionManager import ConnectionManager
+from BundleFlowInterface import BundleFlowInterface
+from DataManager import DataManager   
+from Bundle import Bundle
 
-SERVER_ADDRESS = '172.24.1.1'
-BROADCAST_ADDRESS = '172.24.1.255'
-CLIENT_ADDRESS = '172.24.1.78'
-DATA_PORT = 10000
-HELLO_PORT = 5000
-SID = 10
+class Mule:
 
-TABLE_NAME = 'sensor_data'
-DATABASE_NAME = 'sdtn'
-MYSQL_USER = 'sdtn'
-MYSQL_PASSWORD = 'password'
+    def __init__(self):
+        self.SID = 1
+        self.DATA_PORT = 10000
+        self.HELLO_PORT = 5000
 
-conman = ConnectionManager(5, 'wlan0', 5000, 10000)
-dbi = DatabaseInterface(TABLE_NAME, DATABASE_NAME, MYSQL_USER, MYSQL_PASSWORD)
+        self.TABLE_NAME = 'sensor_data'
+        self.DATABASE_NAME = 'sdtn'
+        self.MYSQL_USER = 'sdtn'
+        self.MYSQL_PASSWORD = 'password'
 
+        self.conman = ConnectionManager(5, 'wlan0', 5000, 10000)
+        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD)
+        self.dataMan = DataManager(10, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
+        self.dataSocket = self.conman.getDataSocket()
+        self.bfi = BundleFlowInterface(self.dataSocket)
 
-def initializeDB():
-    db = MySQLdb.connect('localhost', MYSQL_USER, MYSQL_PASSWORD, DATABASE_NAME)
-    return db
+    def resendBundle(self, bundle):
+        self.bfi.sendBundle(bundle)
 
-def exitHandler(sock):
-    sock.close()
+    def expectAck(self, bundle):
+        terminated = False
+        while not terminated:
+            bundle = self.bfi.receiveBundle(1)
+            if not bundle:
+                terminated = self.conman.acknowledgementTimeout()
+                self.resendBundle(bundle)
+            else:
+                if bundle.split()[0] == '0':
+                    return bundle
+                else:
+                    continue
 
-def createSocket(address, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    def acknowledge(self, bundle):
+        bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x'
+        ack = Bundle(bundleData)
+        print ack.toString()
+        self.bfi.sendBundle(ack)
 
-    server_address = (address, port)
-    print 'starting up on', server_address[0], ' port', server_address[1]
-    sock.bind(server_address)
+    def start(self):
+        while True:
+            try:
+                bundleData, fromSocket = self.bfi.receiveBundle()
+                fromAddress, fromPort = fromSocket
+                self.bfi.setToAddress(fromAddress)
+                bundle = Bundle(bundleData)
+                self.acknowledge(bundle)
 
-    return sock
-
-def insertMessage(data):
-    db = initializeDB()
-    cursor = db.cursor()
-    sql = "INSERT INTO sensor_data (sensor_id, seq, message) VALUES (" + data[1] + "," + data[2] + "," + data[3] +")"
-
-    try:
-        cursor.execute(sql)
-        db.commit()
-    except:
-        db.rollback()
-    
-    db.close()
-
-def sendMessage(sock, pType, message):
-    message = str(pType) + " " + str(SID) + " " + str(message[0]) + " " + str(message[1])
-    print >> sys.stderr, 'Sending', message
-    print ""
-    sock.sendto(message, ('172.24.1.78', DATA_PORT))
-    
-
-def processMessage(message):
-    data = message.split()
-    print "Type:", data[0], "SID:", data[1], "SEQ:", data[2], "\n"
-    # dbi.insertMessage(data)
-    return True, int(data[0]), data[1], int(data[2])
-
-def acknowledge(sock, sequenceNumber):
-    acknowledgement = "0 " + str(sequenceNumber)
-    sock.sendto(acknowledgement, (CLIENT_ADDRESS, DATA_PORT))
-    print 'Sending', acknowledgement, "\n"
-
-def sendHello(sock):
-    helloMessage = "2"
-
-    while True:
-        time.sleep(1)
-        sock.sendto(helloMessage, (BROADCAST_ADDRESS, HELLO_PORT))
-
-def initializeHelloThread():
-    helloSocket = conman.getHelloSocket()
-    helloSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-
-    thread = threading.Thread(target=sendHello, args=(helloSocket,))
-    thread.daemon = True
-
-    print "Initialized hello thread."
-    return thread
-
-def startHelloThread():
-    helloThread = initializeHelloThread()
-
-    helloThread.start()
-    print "Started hello thread."
-    return helloThread
-
-def confirmAcknowledgement(sock, message):
-    terminated = False
-    data = False
-    while True:
-        try:
-            sock.settimeout(3)
-            data, addr = sock.recvfrom(16) # throws exception when timeout
-        except:
-            sock.settimeout(None)
-            terminated = conman.acknowledgementTimeout()
-            
-        if terminated:
-            return False
-        elif data:
-            break
-        else:
-            sendMessage(sock, 1, message)
-        
-    print "Received message:", data
-    data = data.split()
-    ackSeq = int(data[1])
-    pType = int(data[0])
-    print "Message is Type:", pType, "Seq:", ackSeq, "\n"
-
-    if pType != 0:
-        return False
-    elif ackSeq != message[0]:
-        return False
-    else:
-        return True
+            except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
+                print "Not reachable"
 
 def main():
-    # atexit.register(exitHandler)
-    sock = conman.getDataSocket()
+    mule = Mule()
 
-    helloThread = startHelloThread()
+    helloFactoryThread = mule.conman.startHelloThread()
 
+    mule.start()
     
-    try:
-        while True:
-            time.sleep(1)
-            data, addr = sock.recvfrom(4082)
-            if data:
-                print 'Received messaged:', data
-                success, ptype, recvMessage, recvSeq = processMessage(data)
-                if ptype == 3:
-                    while True:
-                        time.sleep(1)
-                        sendMessage(sock, 1, '1 x')
-                        confirmAcknowledgement(sock, '1 x')
-                elif ptype != 1:
-                    print "Expecting Type: 1, received Type:", ptype
-                else:
-                    acknowledge(sock, recvSeq)
-            else:
-                print 'Disconnected?'
-                break
-    except:
-        exitHandler(sock)
-
 def test():
-    print "ENTERING TEST MODE"
+    print "TEST MODE"
 
 if __name__ == "__main__":
     main()

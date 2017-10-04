@@ -1,11 +1,11 @@
 class BundleFlowInterface:
-    def __init__(self, sock, toAddress):
+    def __init__(self, sock, toAddress = None):
         self.toAddress = toAddress
         self.sock = sock
         self.port = int(self.sock.getsockname()[1])
 
     def sendBundle(self, bundle):
-        print 'Sending', bundle, 'to:', self.toAddress, self.port
+        print 'Sending', bundle.toString(), 'to:', self.toAddress, self.port
         print ""
         bundleString = bundle.toString()
         self.sock.sendto(bundleString, (self.toAddress, self.port))
@@ -16,11 +16,13 @@ class BundleFlowInterface:
 
         try:
             bundle, fromAddress = self.sock.recvfrom(1024)
-            
         except:
-            return False
+            return None
 
         if timeout:    
             self.sock.settimeout(None)
             
         return bundle, fromAddress
+
+    def setToAddress(self, toAddress):
+        self.toAddress = toAddress

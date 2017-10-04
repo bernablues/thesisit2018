@@ -65,12 +65,10 @@ class DataManager:
         #     droppedData = self.dropRandom()     
         elif self.droppingProtocol == self.DROP_CURRENT_PROTOCOL:
             droppedData = 'Current' 
-        print 'Dropped:', droppedData
         return droppedData
 
     def isBufferFull(self):
         currentEntries = self.dbInterface.getRowCount()
-        print self.maxEntries, currentEntries
         if self.maxEntries < currentEntries:
             return True
         else:
