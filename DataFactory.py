@@ -7,11 +7,11 @@
 import time
 
 class DataFactory:
-    def __init__(self, dataSize, timeToGenerate, dbInterface):
-        self.dbInterface = dbInterface
+    def __init__(self, dataSize, timeToGenerate, sid, dataManager):
+        self.dataManager = dataManager
         self.dataSize = dataSize
         self.timeToGenerate = timeToGenerate
-        self.data = []
+        self.sid = sid
 
     def printProperties(self):
         print 'DATA FACTORY PROPERTIES:'
@@ -19,20 +19,17 @@ class DataFactory:
         print 'Time to generate data (in seconds):', self.timeToGenerate
         print '========'
 
-    def generateEntry(self, seq):
+    def generateEntry(self):
         payload = 'x' * self.dataSize
-        entry = [str(seq), payload]
+        entry = [str(self.sid), payload]
         return entry
 
     def pushEntry(self, entry):
-        self.dbInterface.insertMessage(entry)
+        self.dataManager.insertData(entry)
         return True        
 
     def start(self):
-        seq = 1
-
         while True:
             time.sleep(self.timeToGenerate)
-            entry = self.generateEntry(seq)
-            seq += 1
+            entry = self.generateEntry()
             self.pushEntry(entry)

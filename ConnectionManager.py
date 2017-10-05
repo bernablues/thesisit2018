@@ -1,6 +1,9 @@
 import socket
 import fcntl
 import struct
+import threading
+import time
+from BundleFlowInterface import BundleFlowInterface
 
 class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort):
@@ -14,6 +17,8 @@ class ConnectionManager:
         self.dataSocket = None
         self.helloSocket = None
         self.__initializeSockets()
+
+        self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
 
         self.connected = False
         self.connectedTo = False
@@ -40,6 +45,9 @@ class ConnectionManager:
     def __resetHelloSocket(self):
         self.helloSocket.close()
         self.helloSocket = self.__createHelloSocket()
+    
+    def __resetHelloBundleFlowInterface(self):
+        self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
 
     def __initializeSockets(self):
         self.dataSocket = self.__createDataSocket()
@@ -55,6 +63,7 @@ class ConnectionManager:
         self.connected = False
         self.connectedTo = False
         self.__resetHelloSocket()
+        self.__resetHelloBundleFlowInterface()
 
     def getDataSocket(self):
         return self.dataSocket
@@ -62,14 +71,44 @@ class ConnectionManager:
     def getHelloSocket(self):
         return self.helloSocket
 
+    def getConnectedTo(self):
+        return self.connectedTo
+
     def isConnected(self):
         return self.connected
 
     def listenForHello(self):
         print "Listening for hello..."
-        data, addr = self.helloSocket.recvfrom(4)
-        print "Received hello:", data, 'from', addr
-        self.__initializeConnection(addr)
+        bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
+        fromAddress, fromPort = fromSocket
+        print "Received hello:", bundleData, 'from', fromAddress
+        self.__initializeConnection(fromAddress)
+
+    def __sendHello(self, sock):
+        helloMessage = "2"
+
+        while True:
+            time.sleep(1)
+            # Make this parametizable
+            sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
+
+    def __initializeHelloThread(self):
+        helloSocket = self.getHelloSocket()
+        helloSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+        thread = threading.Thread(target=self.__sendHello, args=(helloSocket,))
+        thread.daemon = True
+
+        print "Initialized hello thread."
+        return thread
+
+
+    def startHelloThread(self):
+        helloThread = self.__initializeHelloThread()
+
+        helloThread.start()
+        print "Started hello thread."
+        return helloThread
 
     def acknowledgementTimeout(self):
         self.currentAckTimeout += 1

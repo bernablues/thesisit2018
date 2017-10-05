@@ -11,11 +11,11 @@ class DatabaseInterface:
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
         return db
 
-    def insertMessage(self, data):
+    def insertRow(self, data):
         db = self.__openDatabase()
         cursor = db.cursor()
         # To be improved, assumes column names. Could use dictionaries for key->value pairs.
-        sql = "INSERT INTO " + self.table + " (seq, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
+        sql = "INSERT INTO " + self.table + " (sid, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
         try:
             cursor.execute(sql)
             db.commit()
@@ -39,13 +39,18 @@ class DatabaseInterface:
 
         db.close()
 
-        return results
+        return results[0]
 
-    def getData(self, numberOfRows):
+    def getRows(self, numberOfRows, isReversed = False):
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        sql = "SELECT seq, payload FROM " + self.table + " LIMIT " + str(numberOfRows)
+        sql = "SELECT sid, payload FROM " + self.table
+
+        if isReversed:
+            sql = sql + ' ORDER BY id DESC'
+
+        sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
             cursor.execute(sql)
@@ -57,11 +62,52 @@ class DatabaseInterface:
 
         return results
 
-    def deleteData(self, numberOfRows):
+    def getNthRow(self, n):
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        sql = "DELETE FROM " + self.table + " LIMIT " + str(numberOfRows)
+        sql = "SELECT sid, payload FROM " + self.table
+        sql = "SELECT * FROM " + self.table + " ORDER BY id LIMIT n-1,1"
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+        except:
+            print "DB Error"
+
+        db.close()
+
+        return results
+
+    def getAllRows(self, isReversed = False):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+
+        sql = "SELECT sid, payload FROM " + self.table
+        
+        if isReversed:
+            sql = sql + ' ORDER BY id DESC'
+
+        try:
+            cursor.execute(sql)
+            results = cursor.fetchall()
+        except:
+            print "DB Error"
+
+        db.close()
+
+        return results
+
+    def deleteRows(self, numberOfRows, isReversed = False):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+
+        sql = "DELETE FROM " + self.table 
+        
+        if isReversed:
+            sql = sql + ' ORDER BY id DESC'
+
+        sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
             cursor.execute(sql)
