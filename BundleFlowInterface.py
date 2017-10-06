@@ -15,14 +15,16 @@ class BundleFlowInterface:
             self.sock.settimeout(timeout)
 
         try:
-            bundle, fromAddress = self.sock.recvfrom(1024)
+            bundle, fromSocket = self.sock.recvfrom(1024)
+        except KeyboardInterrupt:
+            print "Keyboard interrupted. Failed to receive bundle. Terminating from BundleFlowInterface."
         except:
             return None
 
         if timeout:    
             self.sock.settimeout(None)
             
-        return bundle, fromAddress
+        return bundle, fromSocket
 
     def setToAddress(self, toAddress):
         self.toAddress = toAddress

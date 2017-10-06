@@ -44,7 +44,7 @@ class Mule:
                     continue
 
     def acknowledge(self, bundle):
-        bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x'
+        bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x' #does not work when two headers only
         ack = Bundle(bundleData)
         print ack.toString()
         self.bfi.sendBundle(ack)
@@ -56,15 +56,17 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
+                self.dataMan.insertData(bundle.toData())
                 self.acknowledge(bundle)
-
+            except KeyboardInterrupt:
+                print "Keyboard interrupted. Terminating from mule." 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
 
 def main():
     mule = Mule()
 
-    helloFactoryThread = mule.conman.startHelloThread()
+    # helloFactoryThread = mule.conman.startHelloThread()
 
     mule.start()
     
