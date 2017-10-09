@@ -17,7 +17,7 @@ class DataManager:
     DataMan_logger = logging.getLogger(__name__)
     DataMan_logger.setLevel(logging.INFO)
 
-    DataMan_handler = logging.FileHandler(__name__)
+    DataMan_handler = logging.FileHandler('DataMan.log')
     DataMan_handler.setLevel(logging.INFO)
 
     DataMan_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

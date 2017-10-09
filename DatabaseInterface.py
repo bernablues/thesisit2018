@@ -11,7 +11,7 @@ class DatabaseInterface:
     DBI_logger.setLevel(logging.INFO)
 
     # create a file handler
-    DBI_handler = logging.FileHandler(__name__)
+    DBI_handler = logging.FileHandler('DBI.log')
     DBI_handler.setLevel(logging.INFO)
 
     # create a logging format

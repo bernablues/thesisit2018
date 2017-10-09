@@ -14,7 +14,7 @@ class ConnectionManager:
     ConMan_logger = logging.getLogger(__name__)
     ConMan_logger.setLevel(logging.INFO)
 
-    ConMan_handler = logging.FileHandler(__name__)
+    ConMan_handler = logging.FileHandler('ConMan.log')
     ConMan_handler.setLevel(logging.INFO)
 
     ConMan_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

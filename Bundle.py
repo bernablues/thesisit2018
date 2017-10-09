@@ -7,7 +7,7 @@ class Bundle:
     Bundle_logger = logging.getLogger(__name__)
     Bundle_logger.setLevel(logging.INFO)
 
-    Bundle_handler = logging.FileHandler(__name__)
+    Bundle_handler = logging.FileHandler('Bundle.log')
     Bundle_handler.setLevel(logging.INFO)
 
     Bundle_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

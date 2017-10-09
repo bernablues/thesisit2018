@@ -13,7 +13,7 @@ DF_logger = logging.getLogger(__name__)
 DF_logger.setLevel(logging.INFO)
 
 # create a file handler
-DF_handler = logging.FileHandler(__name__)
+DF_handler = logging.FileHandler('DF.log')
 DF_handler.setLevel(logging.INFO)
 
 # create a logging format
