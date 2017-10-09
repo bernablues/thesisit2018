@@ -69,7 +69,7 @@ class DataManager:
 
     def isBufferFull(self):
         currentEntries = self.dbInterface.getRowCount()
-        if self.maxEntries < currentEntries:
+        if self.maxEntries <= currentEntries:
             return True
         else:
             return False

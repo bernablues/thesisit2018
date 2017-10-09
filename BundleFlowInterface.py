@@ -5,8 +5,8 @@ class BundleFlowInterface:
         self.port = int(self.sock.getsockname()[1])
 
     def sendBundle(self, bundle):
-        print 'Sending', bundle.toString(), 'to:', self.toAddress, self.port
-        print ""
+        # print 'Sending', bundle.toString(), 'to:', self.toAddress, self.port
+        # print ""
         bundleString = bundle.toString()
         self.sock.sendto(bundleString, (self.toAddress, self.port))
     
@@ -18,6 +18,7 @@ class BundleFlowInterface:
             bundle, fromSocket = self.sock.recvfrom(1024)
         except KeyboardInterrupt:
             print "Keyboard interrupted. Failed to receive bundle. Terminating from BundleFlowInterface."
+            exit()
         except:
             return None
 

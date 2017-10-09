@@ -23,8 +23,8 @@ class Sensor:
 
         self.conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD)
-        self.dataMan = DataManager(10, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
-        self.dataFactory = DataFactory(5, 1, self.SID, self.dataMan)
+        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
+        self.dataFactory = DataFactory(990, 0.01, self.SID, self.dataMan)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = None
 
@@ -66,7 +66,7 @@ class Sensor:
     def expectAck(self, bundle):
         terminated = False
         while not terminated:
-            bundleData = self.bfi.receiveBundle(1)
+            bundleData = self.bfi.receiveBundle(3)
             fromAddress = bundleData[1]
             bundleData = bundleData[0]
 
@@ -81,17 +81,24 @@ class Sensor:
                     continue
 
     def start(self):
+        packetsPassed = 0
+        start = time.time()
         while True:
             self.checkConnection()
-            time.sleep(2)
+            # time.sleep(2)
             try:
                 bundle = self.sendNext()
                 self.expectAck(bundle)
+                packetsPassed += 1
 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
-                self.conman.acknowledgementTimeout()
-
+                if self.conman.acknowledgementTimeout():
+                    break
+        end = time.time()
+        timeElapsed = end-start
+        print "Time elapsed:", str(timeElapsed)
+        print "Packets sent:", str(packetsPassed)
 def main():
     sensor = Sensor()
     dataFactoryThread = threading.Thread(target=sensor.dataFactory.start, args=())

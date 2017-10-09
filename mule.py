@@ -23,7 +23,7 @@ class Mule:
 
         self.conman = ConnectionManager(5, 'wlan0', 5000, 10000)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD)
-        self.dataMan = DataManager(10, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
+        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = BundleFlowInterface(self.dataSocket)
 
@@ -46,7 +46,6 @@ class Mule:
     def acknowledge(self, bundle):
         bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x' #does not work when two headers only
         ack = Bundle(bundleData)
-        print ack.toString()
         self.bfi.sendBundle(ack)
 
     def start(self):
@@ -56,17 +55,19 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
+                print bundle.toString()
                 self.dataMan.insertData(bundle.toData())
                 self.acknowledge(bundle)
             except KeyboardInterrupt:
                 print "Keyboard interrupted. Terminating from mule." 
+                break
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
 
 def main():
     mule = Mule()
 
-    # helloFactoryThread = mule.conman.startHelloThread()
+    helloFactoryThread = mule.conman.startHelloThread()
 
     mule.start()
     
