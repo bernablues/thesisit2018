@@ -99,6 +99,8 @@ class Sensor:
         timeElapsed = end-start
         print "Time elapsed:", str(timeElapsed)
         print "Packets sent:", str(packetsPassed)
+        bandwidth = 902 * packetsPassed / timeElapsed
+        print "Bandwidth:", str(bandwidth)
 def main():
     sensor = Sensor()
     dataFactoryThread = threading.Thread(target=sensor.dataFactory.start, args=())
