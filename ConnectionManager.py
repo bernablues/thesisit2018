@@ -114,7 +114,7 @@ class ConnectionManager:
         print "Listening for hello..."
         bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
         fromAddress, fromPort = fromSocket
-        self.ConMan_logger.info("Received hello: %s", bundleData, 'from %s', fromAddress)
+        self.ConMan_logger.info('Received hello: %s from %s', bundleData, fromAddress)
         print "Received hello:", bundleData, 'from', fromAddress
         self.__initializeConnection(fromAddress)
 
