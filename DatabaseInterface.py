@@ -1,11 +1,12 @@
 import MySQLdb
 
 class DatabaseInterface:
-    def __init__(self, table, database, user, password):
+    def __init__(self, table, database, user, password, columns):
         self.table = table
         self.database = database
         self.user = user
         self.password = password
+        self.columns = columns
 
     def __openDatabase(self):
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
@@ -15,7 +16,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
         # To be improved, assumes column names. Could use dictionaries for key->value pairs.
-        sql = "INSERT INTO " + self.table + " (sid, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
+        sql = "INSERT INTO " + self.table + " (" + ', '.join(self.columns) + ") VALUES (" + + ")"
         try:
             cursor.execute(sql)
             db.commit()
@@ -45,7 +46,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        sql = "SELECT sid, payload FROM " + self.table
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
 
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
@@ -66,7 +67,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        sql = "SELECT sid, payload FROM " + self.table
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
         sql = "SELECT * FROM " + self.table + " ORDER BY id LIMIT n-1,1"
 
         try:
@@ -83,7 +84,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        sql = "SELECT sid, payload FROM " + self.table
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
         
         if isReversed:
             sql = sql + ' ORDER BY id DESC'

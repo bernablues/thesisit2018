@@ -6,18 +6,14 @@ class Bundle:
         elif type(data) is tuple:
             bundleData = self.tupleToList(data)
         self.type = bundleData[0]
-        self.seq = bundleData[1]
-
-        if len(bundleData) < 3:
-            bundleData[2] = ''
-        if len(bundleData) < 4:
-            bundleData[3] = ''
-
-        self.sid = bundleData[2]
-        self.payload = bundleData[3]
+        self.bundleSeq = bundleData[1]
+        self.timestamp = bundleData[2]
+        self.dataSeq = bundleData[3]
+        self.sid = bundleData[4]
+        self.data = bundleData[5]
 
     def getBundleProperties(self):
-        return [self.type, self.sid, self.payload]
+        return [self.type, self.sid, self.data]
 
     def getType(self):
         return self.type
@@ -25,11 +21,17 @@ class Bundle:
     def getSID(self):
         return self.sid
 
-    def getSeq(self):
-        return self.seq
+    def getBundleSeq(self):
+        return self.bundleSeq
 
-    def getPayload(self):
-        return self.payload
+    def getDataSeq(self):
+        return self.dataSeq
+
+    def getTimestamp(self):
+        return self.timestamp
+
+    def getData(self):
+        return self.data
 
     def stringToList(self, string):
         return string.split()
@@ -38,7 +40,12 @@ class Bundle:
         return [str(x) for x in tupleData]
 
     def toString(self):
-        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload
+        return  str(self.type) + ' ' + \
+                str(self.bundleSeq) + ' ' + \
+                str(self.timestamp) + ' ' + \
+                str(self.dataSeq) + ' ' + \
+                str(self.sid) + ' ' + \
+                self.data
 
     def toData(self):
-        return [str(self.sid), str(self.payload)]
+        return [str(self.sid), str(self.timestamp), str(self.dataSeq), str(self.data)]

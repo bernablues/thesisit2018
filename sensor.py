@@ -80,27 +80,31 @@ class Sensor:
                 else:
                     continue
 
+    def getAvailableDataCount(self):
+        return self.dbi.getRowCount()
+
     def start(self):
-        packetsPassed = 0
-        start = time.time()
+        # packetsPassed = 0
+        # start = time.time()
         while True:
             self.checkConnection()
-            # time.sleep(2)
+            time.sleep(2)
             try:
                 bundle = self.sendNext()
                 self.expectAck(bundle)
-                packetsPassed += 1
+                # packetsPassed += 1
 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
                 if self.conman.acknowledgementTimeout():
                     break
-        end = time.time()
-        timeElapsed = end-start
-        print "Time elapsed:", str(timeElapsed)
-        print "Packets sent:", str(packetsPassed)
-        bandwidth = 902 * packetsPassed / timeElapsed
-        print "Bandwidth:", str(bandwidth)
+
+        # end = time.time()
+        # timeElapsed = end-start
+        # print "Time elapsed:", str(timeElapsed)
+        # print "Packets sent:", str(packetsPassed)
+        # bandwidth = 902 * packetsPassed / timeElapsed
+        # print "Bandwidth:", str(bandwidth)
 def main():
     sensor = Sensor()
     dataFactoryThread = threading.Thread(target=sensor.dataFactory.start, args=())
