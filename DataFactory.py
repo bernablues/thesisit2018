@@ -5,13 +5,13 @@
 # number of seconds to generate new entry,
 # number of seconds to send data
 import time
+import datetime
 
 class DataFactory:
     def __init__(self, dataSize, timeToGenerate, sid, dataManager):
         self.dataManager = dataManager
         self.dataSize = dataSize
         self.timeToGenerate = timeToGenerate
-        self.sid = sid
 
     def printProperties(self):
         print 'DATA FACTORY PROPERTIES:'
@@ -20,8 +20,10 @@ class DataFactory:
         print '========'
 
     def generateEntry(self):
-        payload = 'x' * self.dataSize
-        entry = [str(self.sid), payload]
+        data = 'x' * self.dataSize
+        timestamp = str(datetime.datetime.now())
+        
+        entry = [timestamp, '0', data]
         return entry
 
     def pushEntry(self, entry):

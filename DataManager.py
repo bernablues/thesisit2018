@@ -12,11 +12,12 @@ class DataManager:
     # DROP_RANDOM_PROTOCOL = 2
     DROP_CURRENT_PROTOCOL = 3
 
-    def __init__(self, maxEntries, droppingProtocol, dbInterface):
+    def __init__(self, maxEntries, droppingProtocol, dbInterface, bundleSize):
         self.maxEntries = maxEntries
         self.droppingProtocol = droppingProtocol
         self.dbInterface = dbInterface
         self.equalizeMaxEntries() #Needed for drop current protocol
+        self.bundleSize = bundleSize
 
     def printProperties(self):
         print 'Maximum number of entries:', self.maxEntries
@@ -74,10 +75,19 @@ class DataManager:
         else:
             return False
 
-    def getData(self, numberOfData, deleteData = False):
-        data = self.dbInterface.getRows(numberOfData)
+    def checkBundleSizeLimit(self):
+        rowsAvailabe = self.dbInterface.getRowCount()
+        if self.bundleSize <= rowsAvailabe:
+            return True
+        else:
+            return False
+
+    def getData(self, deleteData = False):
+        while not self.checkBundleSizeLimit():
+            continue
+        data = self.dbInterface.getRows(self.bundleSize)
         if deleteData:
-            self.dbInterface.deleteRows(numberOfData)
+            self.dbInterface.deleteRows(self.bundleSize)
         return data
 
     def getAllData(self):

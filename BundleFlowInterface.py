@@ -16,6 +16,7 @@ class BundleFlowInterface:
 
         try:
             bundle, fromSocket = self.sock.recvfrom(1024)
+            print bundle
         except KeyboardInterrupt:
             print "Keyboard interrupted. Failed to receive bundle. Terminating from BundleFlowInterface."
             exit()

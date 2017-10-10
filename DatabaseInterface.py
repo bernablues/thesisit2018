@@ -12,11 +12,15 @@ class DatabaseInterface:
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
         return db
 
+    def __dataToSqlString(self, data):
+        return "'" + "', '".join(data) + "'"
+
     def insertRow(self, data):
         db = self.__openDatabase()
         cursor = db.cursor()
         # To be improved, assumes column names. Could use dictionaries for key->value pairs.
-        sql = "INSERT INTO " + self.table + " (" + ', '.join(self.columns) + ") VALUES (" + + ")"
+        sql = "INSERT INTO " + self.table + " (" + ', '.join(self.columns) + ") VALUES (" + self.__dataToSqlString(data) + ")"
+        print sql
         try:
             cursor.execute(sql)
             db.commit()

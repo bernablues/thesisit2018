@@ -16,32 +16,33 @@ class Sensor:
         self.DATA_PORT = 10000
         self.HELLO_PORT = 5000
 
-        self.TABLE_NAME = 'generated_sensor_data'
+        self.TABLE_NAME = 'sensor_data'
         self.DATABASE_NAME = 'sdtn'
         self.MYSQL_USER = 'sdtn'
         self.MYSQL_PASSWORD = 'thesisit'
+        self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
         self.conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
-        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD)
-        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
-        self.dataFactory = DataFactory(990, 0.01, self.SID, self.dataMan)
+        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
+        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi, 5)
+        self.dataFactory = DataFactory(1, 3, self.SID, self.dataMan)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = None
 
         self.currentSeq = 1
 
     def sendNext(self):
-        data = self.dataMan.getData(1, True)[0]
+        data = self.dataMan.getData(True)
         dataBundle = self.appendHeaders(1, data)
         bundle = Bundle(dataBundle)
         self.bfi.sendBundle(bundle)
         return bundle
         
 
-    def appendHeaders(self, bundleType, bundleData):
-        headers = (bundleType, self.currentSeq)
-        bundle = headers + bundleData
-        return bundle
+    def appendHeaders(self, bundleType, data):
+        headers = (bundleType, self.currentSeq, self.SID)
+        bundleData = (headers, data)
+        return bundleData
 
     def redirect(self, bundle):
         if bundle.getType() == 0:
@@ -79,9 +80,6 @@ class Sensor:
                     return bundle
                 else:
                     continue
-
-    def getAvailableDataCount(self):
-        return self.dbi.getRowCount()
 
     def start(self):
         # packetsPassed = 0
