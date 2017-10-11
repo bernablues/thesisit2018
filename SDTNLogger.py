@@ -2,40 +2,52 @@ import logging
 
 class SDTNLogger:
 
-
-    # logging.basicConfig(level=logging.DEBUG)
-    # DF_logger = logging.getLogger(__name__)
-
-    # DF_logger.setLevel(logging.INFO)
-
-    # # create a file handler
-    # DF_handler = logging.FileHandler('DF.log')
-    # DF_handler.setLevel(logging.INFO)
-
-    # # create a logging format
-    # DF_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    # DF_handler.setFormatter(DF_formatter)
-
-    # add the handlers to the logger
-
+# https://docs.python.org/2/howto/logging-cookbook.html
     def __init__(self, className, experiment, degreeLevel):
-        # Output to file only
+
+        # # Outputs to file only
+        # # =====================
+
+        # self.className = className
+        # self.className_logger = self.className+'_logger'
+        # self.degreeLevel = degreeLevel
+
+        # format_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        # log_filename = './logs/Class_logs/'+self.className+'.log'
+        # logging.basicConfig(filename=log_filename, level=self.degreeLevel, format=format_string)
+
+        # self.className_logger = logging.getLogger(__name__)
+        # self.className_logger.setLevel(logging.INFO)
+        # # =====================
+
+        # Outputs to multiple files simultaneously
         # =====================
 
         self.className = className
+        self.experiment = experiment
         self.className_logger = self.className+'_logger'
+        self.experiment_logger = self.experiment+'_logger'
         self.degreeLevel = degreeLevel
 
-        format_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        log_filename = './logs/Class_logs/'+self.className+'.log'
-        logging.basicConfig(filename=log_filename, level=self.degreeLevel, format=format_string)
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+        expt_filename = './logs/Experiment_logs/'+self.experiment+'.log'
+        expt_handler = logging.FileHandler(expt_filename)        
+        expt_handler.setFormatter(formatter)
+
+        class_filename = './logs/Class_logs/'+self.className+'.log'
+        class_handler = logging.FileHandler(class_filename)        
+        class_handler.setFormatter(formatter)
+
+        # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         self.className_logger = logging.getLogger(__name__)
         self.className_logger.setLevel(logging.INFO)
+        self.className_logger.addHandler(class_handler)
+        self.className_logger.addHandler(expt_handler)
         # =====================
 
 
-        # # Output to console and file
+        # # Outputs to both console and file
         # # =====================
         # self.className = className
         # self.className_logger = self.className+'_logger'
@@ -59,15 +71,19 @@ class SDTNLogger:
         # self.className_logger.addHandler(self.className_handler)
         # # add the experiment handler here
 
+        # Pwede magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
+
         # # =====================
 
     def printProperties(self):
         print 'className_logger: ', self.className_logger
-        # print 'className_handler: ', self.className_handler
-        # print 'className_formatter: ', self.className_formatter
+        print 'className_handler: ', self.className_handler
+        print 'className_formatter: ', self.className_formatter
         print 'degreeLevel: ', self.degreeLevel
 
-    def loglog(self, message, level):
+    def classLog(self, message, level):
+
+        # if expt not null, call experimentLog()
 
         if level == 'DEBUG':
             self.className_logger.debug('%s', message)
@@ -83,35 +99,23 @@ class SDTNLogger:
         else:
             self.className_logger.critical('%s', message)
 
-    # def __classLogger(self, message, level):
 
-    #     def zero():
-    #         return "zero"
+    # def experimentLog(self, message, level):
 
-    #     def one():
-    #         return "one"
+    #     if level == 'DEBUG':
+    #         self.experiment_logger.debug('%s', message)
+    #     elif level == 'INFO':
+    #         self.experiment_logger.info('%s', message)
 
-    #     def numbers_to_functions_to_strings(argument):
-    #         switcher = {
-    #             0: zero,
-    #             1: one,
-    #             2: lambda: "two",
-    #         }
-    #         # Get the function from switcher dictionary
-    #         func = switcher.get(argument, lambda: "nothing")
-    #         # Execute the function
-    #         return func()
+    #     elif level == 'WARNING':
+    #         self.experiment_logger.warning('%s', message)
 
-    #     switch degreeLevel:
+    #     elif level == 'ERROR':
+    #         self.experiment_logger.error('%s', message)
 
-    #     case debug:
-    #         self.className_logger('')
-    #     case info:          case
-    #     case warning:
-    #     case error:
-    #     case critical:
+    #     else:
+    #         self.experiment_logger.critical('%s', message)
 
-    # def __experimentLogger(self, message, level):
 
 
     # class A:
@@ -132,9 +136,8 @@ class SDTNLogger:
 
 
 
-trialLogger = SDTNLogger('please', None, 'INFO')
+trialLogger = SDTNLogger('clsname', 'expt', 'INFO')
 
 # trialLogger.printProperties()
 
-trialLogger.loglog("trial log msg", 'INFO')
-
+trialLogger.classLog("trial log msg", 'INFO')
