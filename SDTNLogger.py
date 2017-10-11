@@ -3,10 +3,10 @@ import logging
 class SDTNLogger:
 
 # https://docs.python.org/2/howto/logging-cookbook.html
-    def __init__(self, className, experiment, degreeLevel):
+    def __init__(self, className, experiments, degreeLevel):
 
-        # # Outputs to file only
         # # =====================
+        # # Outputs to file only
 
         # self.className = className
         # self.className_logger = self.className+'_logger'
@@ -20,35 +20,37 @@ class SDTNLogger:
         # self.className_logger.setLevel(logging.INFO)
         # # =====================
 
-        # Outputs to multiple files simultaneously
-        # =====================
 
-        self.className = className
-        self.experiment = experiment
-        self.className_logger = self.className+'_logger'
-        self.experiment_logger = self.experiment+'_logger'
-        self.degreeLevel = degreeLevel
+        # =====================
+        # Outputs to multiple files simultaneously
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        self.degreeLevel = degreeLevel
 
-        expt_filename = './logs/Experiment_logs/'+self.experiment+'.log'
-        expt_handler = logging.FileHandler(expt_filename)        
-        expt_handler.setFormatter(formatter)
+        self.className = className
+        self.className_logger = self.className+'_logger'
 
         class_filename = './logs/Class_logs/'+self.className+'.log'
         class_handler = logging.FileHandler(class_filename)        
         class_handler.setFormatter(formatter)
 
-        # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         self.className_logger = logging.getLogger(__name__)
         self.className_logger.setLevel(logging.INFO)
         self.className_logger.addHandler(class_handler)
-        self.className_logger.addHandler(expt_handler)
+
+        for experiment in experiments:
+            self.experiment = experiment
+            self.experiment_logger = self.experiment+'_logger'
+            expt_filename = './logs/Experiment_logs/'+self.experiment+'.log'
+            expt_handler = logging.FileHandler(expt_filename)        
+            expt_handler.setFormatter(formatter)
+            self.className_logger.addHandler(expt_handler)
+
+        # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         # =====================
 
-
-        # # Outputs to both console and file
         # # =====================
+        # # Outputs to both console and file
         # self.className = className
         # self.className_logger = self.className+'_logger'
         # self.className_handler = self.className+'_handler'
@@ -136,7 +138,7 @@ class SDTNLogger:
 
 
 
-trialLogger = SDTNLogger('clsname', 'expt', 'INFO')
+trialLogger = SDTNLogger('clsname', ['expt1','expt2'], 'INFO')
 
 # trialLogger.printProperties()
 
