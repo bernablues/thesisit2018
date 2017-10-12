@@ -15,7 +15,7 @@ class DatabaseInterface:
         self.password = password
 
         # self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
-        self.DBI_logger.classLog('DBI initialized: db_name: ' + str(self.database) + ' table_name: ' + str(self.table_name) + ' user: ' + str(self.user), 'INFO') 
+        self.DBI_logger.classLog('DBI initialized: db_name: ' + str(self.database) + ' table_name: ' + str(self.table) + ' user: ' + str(self.user), 'INFO') 
 
     def __openDatabase(self):
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
@@ -54,7 +54,7 @@ class DatabaseInterface:
         try:
             self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
 
             results = cursor.fetchone()
 
@@ -85,15 +85,15 @@ class DatabaseInterface:
         try:
             self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
-            
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql, 'INFO')
+
             results = cursor.fetchall()
             self.DBI_logger.classLog('Rows: ' + str(results), 'INFO' )
 
         except:
             print "DB Error"
-            self.DBI_logger.warning('DB Error: getting row count')
-        
+            self.DBI_logger.classLog('DB Error: getting row count', 'WARNING')
+
         self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
 
@@ -118,7 +118,7 @@ class DatabaseInterface:
         except:
             print "DB Error"
             self.DBI_logger.classLog('DB Error: getting nth row', 'WARNING')
-            
+
         self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
 
@@ -128,23 +128,22 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-
-        self.DBI_logger.classLog('Getting all rows from db...' , 'INFO')
+        self.DBI_logger.classLog('Getting all rows from db...', 'INFO')
         sql = "SELECT sid, payload FROM " + self.table
-        
+
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
 
         try:
             self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
 
             results = cursor.fetchall()
             self.DBI_logger.classLog('Rows: ' + str(results), 'INFO')
         except:
             print "DB Error"
-            self.DBI_logger.warning('Getting all rows from db...' , 'INFO')
+            self.DBI_logger.classLog('Getting all rows from db...', 'WARNING')
 
         self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
@@ -157,7 +156,7 @@ class DatabaseInterface:
 
         self.DBI_logger.classLog('Deleting n (' + str(numberOfRows) + ') row from db...', 'INFO')
         sql = "DELETE FROM " + self.table 
-        
+
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
 
@@ -166,14 +165,13 @@ class DatabaseInterface:
         try:
             self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql, 'INFO')
 
             self.DBI_logger.classLog('Committing to db.', 'INFO')
             db.commit()
             self.DBI_logger.classLog('Successfully committed to db.', 'INFO')
 
         except:
-
             self.DBI_logger.classLog('DB rollback', 'WARNING')
             db.rollback()
             self.DBI_logger.classLog('Deleting n (' + str(numberOfRows) + ') rows from db.', 'WARNING')

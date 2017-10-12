@@ -30,7 +30,7 @@ class ConnectionManager:
         self.connected = False
         self.connectedTo = False
 
-        self.ConMan_logger.classLog('ConMan initialized: max_ack_timeout: ' + str(maxAckTimeout) + ' hello_port: ' + str(helloPort) + ' data_port: ' + ' own_IP_addr: ' + self.ownIpAddress, 'INFO')
+        self.ConMan_logger.classLog('ConMan initialized: max_ack_timeout: ' + str(maxAckTimeout) + ' hello_port: ' + str(helloPort) + ' data_port: ' + str(dataPort) + ' own_IP_addr: ' + str(self.ownIpAddress), 'INFO')
 
     def __getOwnIpAddress(self, ifname):
         self.ConMan_logger.classLog('Getting own IP addr...', 'INFO')
@@ -63,7 +63,7 @@ class ConnectionManager:
         self.helloSocket = self.__createHelloSocket()
     
     def __resetHelloBundleFlowInterface(self):
-        self.ConMan_logger.classLog('Ressetting HelloBFI...', 'INFO')
+        self.ConMan_logger.classLog('Resetting HelloBFI...', 'INFO')
         self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
 
     def __initializeSockets(self):
@@ -72,7 +72,7 @@ class ConnectionManager:
         self.helloSocket = self.__createHelloSocket()
 
     def __initializeConnection(self, address):
-        self.ConMan_logger.classLog('Initializing connection...', 'INFO')
+        self.ConMan_logger.classLog('Initializeditializing connection...', 'INFO')
         self.currentAckTimeout = 0
         self.connected = True
         self.connectedTo = address

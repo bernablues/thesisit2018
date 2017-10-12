@@ -9,7 +9,7 @@ import logging
 from SDTNLogger import SDTNLogger
 
 class DataManager:
-    
+
     DROP_FIRST_PROTOCOL = 0
     DROP_LAST_PROTOCOL = 1
     # DROP_RANDOM_PROTOCOL = 2
@@ -17,22 +17,22 @@ class DataManager:
 
     def __init__(self, maxEntries, droppingProtocol, dbInterface):
         self.DataMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
-        self.DF_logger.classLog('Initializing DataMan...', 'INFO')
-        
+        self.DataMan_logger.classLog('Initializing DataMan...', 'INFO')
+
         self.maxEntries = maxEntries
         self.droppingProtocol = droppingProtocol
         self.dbInterface = dbInterface
         self.equalizeMaxEntries() #Needed for drop current protocol
         # DataMan_logger.info("DataManager initialized: {} (${})".format(self.maxEntries, self.dbInterface))
         # self.DataMan_logger.info('DataMan initialized: max_entries: %s  %s DBI: %S', maxEntries, droppingProtocol, dbInterface)
-        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.max_entries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
-        
+        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.maxEntries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
+
     def printProperties(self):
         print 'Maximum number of entries:', self.maxEntries
         print 'Chosen dropping protocol:', self.droppingProtocol
         print '========'
-        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.max_entries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
-        
+        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.maxEntries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
+
 
     def equalizeMaxEntries(self):
         self.DataMan_logger.classLog('Equalizing max_entries...', 'INFO')

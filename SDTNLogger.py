@@ -151,7 +151,6 @@ class SDTNLogger:
             self.experiment_logger.critical('%s', message)
 
 
-
 # trialLogger = SDTNLogger('clsname', ['expt1','expt2'], 'INFO')
 # trialLogger.printProperties()
 # trialLogger.classLog("trial log msg", 'INFO')
