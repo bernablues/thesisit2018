@@ -1,0 +1,20 @@
+2017-10-11 19:06:12,286 - DataFactory - INFO - akdsjk log msg
+2017-10-12 13:43:34,219 - DataFactory - INFO - Initializing DF
+2017-10-12 13:48:20,039 - DataFactory - INFO - Initializing DF
+2017-10-12 13:48:20,040 - DataFactory - INFO - ('DF initialized: data_size (in bytes): %s time_to_generate: %s sid: %s data_mgr: %s', 1, 1, 1, None)
+2017-10-12 13:49:29,160 - DataFactory - INFO - Initializing DF
+2017-10-12 13:49:29,161 - DataFactory - INFO - ('DF initialized: data_size (in bytes): %s time_to_generate: %s sid: %s data_mgr: %s', 2, 2, 2, None)
+2017-10-12 14:03:02,530 - DataFactory - INFO - Initializing DF
+2017-10-12 14:03:02,530 - DataFactory - INFO - DF initialized: data_size (in bytes): %(self.dataSize)s time_to_generate: %(self.timeToGenerate)s sid: %(self.sid)s data_mgr: %(self.dataManager)s
+2017-10-12 14:04:10,911 - DataFactory - INFO - Initializing DF
+2017-10-12 14:04:10,912 - DataFactory - INFO - DF initialized: data_size (in bytes): %(self.dataSize)s time_to_generate: %(self.timeToGenerate)s sid: %(self.sid)s data_mgr: %(self.dataManager)s
+2017-10-12 14:09:32,165 - DataFactory - INFO - Initializing DF
+2017-10-12 14:09:32,166 - DataFactory - INFO - ('DF initialized: data_size (in bytes): (%s) time_to_generate: (%s) sid: (%s) data_mgr: (%s)', 5, 5, 5, None)
+2017-10-12 14:11:55,983 - DataFactory - INFO - Initializing DF
+2017-10-12 14:13:19,142 - DataFactory - INFO - Initializing DF
+2017-10-12 14:13:19,143 - DataFactory - INFO - DF initialized: data_size (in bytes): 8 time_to_generate: 8 sid: 8data_mgr: None
+2017-10-12 14:14:18,161 - DataFactory - INFO - Initializing DF
+2017-10-12 14:14:18,162 - DataFactory - INFO - DF initialized:
+				 data_size (in bytes): 1 time_to_generate: 1 sid: 1data_mgr: None
+2017-10-12 14:16:19,250 - DataFactory - INFO - Initializing DF
+2017-10-12 14:16:19,251 - DataFactory - INFO - DF initialized: data_size (in bytes): 7 time_to_generate: 7 sid: 7data_mgr: None

@@ -9,9 +9,11 @@ from BundleFlowInterface import BundleFlowInterface
 from DataManager import DataManager   
 from Bundle import Bundle
 
+
 class Mule:
 
     def __init__(self):
+
         self.SID = 1
         self.DATA_PORT = 10000
         self.HELLO_PORT = 5000

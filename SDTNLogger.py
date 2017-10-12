@@ -13,8 +13,13 @@ class SDTNLogger:
         # self.degreeLevel = degreeLevel
 
         # format_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+<<<<<<< HEAD
         # log_filename = './logs/Class_logs/'+self.className+'.log'
         # logging.basicConfig(filename=log_filename, level=self.degreeLevel, format=format_string)
+=======
+        # classLog_filename = './logs/Class_logs/'+self.className+'.log'
+        # logging.basicConfig(filename=classLog_filename, level=self.degreeLevel, format=format_string)
+>>>>>>> ebc1f28fc242a94d4ee2da07579e1ded76af4bf1
 
         # self.className_logger = logging.getLogger(__name__)
         # self.className_logger.setLevel(logging.INFO)
@@ -23,6 +28,10 @@ class SDTNLogger:
 
         # =====================
         # Outputs to multiple files simultaneously
+<<<<<<< HEAD
+=======
+        # No explicit switch cases
+>>>>>>> ebc1f28fc242a94d4ee2da07579e1ded76af4bf1
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         self.degreeLevel = degreeLevel
@@ -34,7 +43,11 @@ class SDTNLogger:
         class_handler = logging.FileHandler(class_filename)        
         class_handler.setFormatter(formatter)
 
+<<<<<<< HEAD
         self.className_logger = logging.getLogger(__name__)
+=======
+        self.className_logger = logging.getLogger(self.className)
+>>>>>>> ebc1f28fc242a94d4ee2da07579e1ded76af4bf1
         self.className_logger.setLevel(logging.INFO)
         self.className_logger.addHandler(class_handler)
 
@@ -49,6 +62,40 @@ class SDTNLogger:
         # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         # =====================
 
+<<<<<<< HEAD
+=======
+
+        # # =====================
+        # # Outputs to multiple files only
+        # # Explicit switch cases
+
+        # self.className = className
+        # self.className_logger = self.className+'_logger'
+        # self.experiments = experiments
+        # self.degreeLevel = degreeLevel
+
+        # format_string = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        # classLog_filename = './logs/Class_logs/'+self.className+'.log'
+        # logging.basicConfig(filename=classLog_filename, level=self.degreeLevel, format=format_string)
+
+        # self.className_logger = logging.getLogger(__name__)
+        # self.className_logger.setLevel(logging.INFO)
+
+        # for experiment in experiments:
+        #     self.experiment = experiment
+        #     self.experiment_logger = self.experiment+'_logger'
+
+        #     expt_filename = './logs/Experiment_logs/'+self.experiment+'.log'
+        #     expt_handler = logging.FileHandler(expt_filename)        
+        #     expt_handler.setFormatter(formatter)
+
+        #   #  # self.className_logger.addHandler(expt_handler)
+
+
+        # =====================
+
+
+>>>>>>> ebc1f28fc242a94d4ee2da07579e1ded76af4bf1
         # # =====================
         # # Outputs to both console and file
         # self.className = className
@@ -102,6 +149,7 @@ class SDTNLogger:
             self.className_logger.critical('%s', message)
 
 
+<<<<<<< HEAD
     # def experimentLog(self, message, level):
 
     #     if level == 'DEBUG':
@@ -143,3 +191,25 @@ trialLogger = SDTNLogger('clsname', ['expt1','expt2'], 'INFO')
 # trialLogger.printProperties()
 
 trialLogger.classLog("trial log msg", 'INFO')
+=======
+    def experimentLog(self, message, level):
+
+        if level == 'DEBUG':
+            self.experiment_logger.debug('%s', message)
+        elif level == 'INFO':
+            self.experiment_logger.info('%s', message)
+
+        elif level == 'WARNING':
+            self.experiment_logger.warning('%s', message)
+
+        elif level == 'ERROR':
+            self.experiment_logger.error('%s', message)
+
+        else:
+            self.experiment_logger.critical('%s', message)
+
+
+# trialLogger = SDTNLogger('clsname', ['expt1','expt2'], 'INFO')
+# trialLogger.printProperties()
+# trialLogger.classLog("trial log msg", 'INFO')
+>>>>>>> ebc1f28fc242a94d4ee2da07579e1ded76af4bf1

@@ -1,0 +1,126 @@
+wag galawin si sensor, mule at station
+
+
+To get SSID strength/ range
+watch -n1 "awk 'NR==3 {print \"WiFi Signal Strength = \" \$3 \"00 %\"}''' /proc/net/wireless"
+
+watch -n1 "awk 'NR==3 {printf(\"WiFi Signal Strength = %.0f%%\\n\",\$3*10/7)}' /proc/net/wireless"
+
+watch -n1 iwconfig
+
+ watch -n1 -d "awk '{print NR == 3 \" WiFi Link Quality = \ "int (\ $ 3 * 1.428571429) \"% (\ "\ $ 3 \" 00 / 70.00) \ "; print \" level WiFi = \ "\ $ 4 \" 00 dBm \ "} '' '/ proc / net / wireless" signal
+
+ https://www.cyberciti.biz/tips/linux-find-out-wireless-network-speed-signal-strength.html
+
+
+ http://www.patricksoftwareblog.com/python-logging-tutorial/
+
+from os import path, remove
+import logging
+import logging.config
+import json
+ 
+from .first_class import FirstClass
+from .second_class import SecondClass
+ 
+ 
+# If applicable, delete the existing log file to generate a fresh log file during each execution
+if path.isfile("python_logging.log"):
+    remove("python_logging.log")
+ 
+with open("python_logging_configuration.json", 'r') as logging_configuration_file:
+    config_dict = json.load(logging_configuration_file)
+ 
+logging.config.dictConfig(config_dict)
+ 
+# Log that the logger was configured
+logger = logging.getLogger(__name__)
+logger.info('Completed configuring logger()!')
+
+
+config json file
+
+
+logging.basicConfig(format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        }
+    },
+ 
+    "handlers": {
+        "file_handler": {
+            "class": "logging.FileHandler",
+            "level": "DEBUG",
+            "formatter": "simple",
+            "filename": "python_logging.log",
+            "encoding": "utf8"
+        }
+    },
+ 
+    "root": {
+        "level": "DEBUG",
+        "handlers": ["file_handler"]
+    }
+}
+
+
+
+Loggers expose the interface that application code directly uses.
+Handlers send the log records (created by loggers) to the appropriate destination.
+Filters provide a finer grained facility for determining which log records to output.
+Formatters specify the layout of log records in the final output.
+
+
+
+A good convention to use when naming loggers is to use a module-level logger, in each module which uses logging, named as follow:
+logger = logging.getLogger(__name__)
+
+
+
+Logger.exception() creates a log message similar to Logger.error(). The difference is that Logger.exception() dumps a stack trace along with it. Call this method only from an exception handler.
+
+
+Handler objects are responsible for dispatching the appropriate log messages (based on the log messages’ severity) to the handler’s specified destination. Logger objects can add zero or more handler objects to themselves with an addHandler() method. As an example scenario, an application may want to send all log messages to a log file, all log messages of error or higher to stdout, and all messages of critical to an email address. This scenario requires three individual handlers where each handler is responsible for sending messages of a specific severity to a specific location.
+
+Application code should not directly instantiate and use instances of Handler. Instead, the Handler class is a base class that defines the interface that all handlers should have and establishes some default behavior that child classes can use (or override).
+
+
+
+    handlers:
+      console:
+        class : logging.StreamHandler
+        formatter: brief
+        level   : INFO
+        filters: [allow_foo]
+        stream  : ext://sys.stdout
+      file:
+        class : logging.handlers.RotatingFileHandler
+        formatter: precise
+        filename: logconfig.log
+        maxBytes: 1024
+        backupCount: 3
+
+        The MemoryHandler class, located in the logging.handlers module, supports buffering of logging records in memory, periodically flushing them to a target handler. Flushing occurs whenever the buffer is full, or when an event of a certain severity or greater is seen.
+
+
+
+    # class A:
+    #     def __init__(self):
+    #         pass
+
+    #     def sampleFunc(self, arg):
+    #         print('you called sampleFunc({})'.format(arg))
+
+    # m = globals()['A']()
+    # func = getattr(m, 'sampleFunc')
+    # func('sample arg')
+
+    # # Sample, all on one line
+    # getattr(globals()['A'](), 'sampleFunc')('sample arg')
+
+    # self.ConMan_logger.info('ConMan initialized: max_ack_timeout: %s hello_port: %s data_port: %s own_IP_addr: %s ')
