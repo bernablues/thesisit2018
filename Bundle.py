@@ -1,23 +1,15 @@
 import logging
+from SDTNLogger import SDTNLogger
+
 
 class Bundle:
 
-    logging.basicConfig(level=logging.DEBUG)
-
-    Bundle_logger = logging.getLogger(__name__)
-    Bundle_logger.setLevel(logging.INFO)
-
-    Bundle_handler = logging.FileHandler('Bundle.log')
-    Bundle_handler.setLevel(logging.INFO)
-
-    Bundle_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    Bundle_handler.setFormatter(Bundle_formatter)
-
-    Bundle_logger.addHandler(Bundle_handler)
-
     def __init__(self, data):
-        self.Bundle_logger.info('Initializing bundle...')
 
+        self.Bundle_logger = SDTNLogger(self.__class__.__name__, ['Y1','Y2'], 'INFO')
+        self.Bundle_logger.classLog("Initializing Bundle...", 'INFO')
+
+        
         # Check if this can be directly touched by outside code
         if type(data) is str:
             bundleData = self.stringToList(data)
@@ -34,41 +26,42 @@ class Bundle:
         self.sid = bundleData[2]
         self.payload = bundleData[3]
 
-        self.Bundle_logger.info('Bundle initialized: type: %s seq: %s SID: %s payload: %s', self.type, self.seq, self.sid, self.payload)
-        
+        self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
+        # self.Bundle_logger.classLog("Bundle initialized: type: %s seq: %s SID: %s payload: %s, self.type, self.seq, self.sid, self.payload", 'INFO') 
 
     def getBundleProperties(self):
-        self.Bundle_logger.info('Bundle properties: type: %s sid: %s payload: %s', self.type, self.sid, self.payload)
+        self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
         return [self.type, self.sid, self.payload]
 
     def getType(self):
-        self.Bundle_logger.info('Getting bundle type: %s', self.type)
+        self.Bundle_logger.classLog('Getting bundle type: '+ str(self.type), 'INFO')
         return self.type
 
     def getSID(self):
-        self.Bundle_logger.info('Getting bundle SID: %s', self.sid)
+        self.Bundle_logger.classLog('Getting bundle SID: '+ str(self.sid), 'INFO')
         return self.sid
 
     def getSeq(self):
-        self.Bundle_logger.info('Getting Seq: %s', self.seq)
+        self.Bundle_logger.classLog('Getting Seq: '+ str(self.seq), 'INFO')
         return self.seq
 
     def getPayload(self):
-        self.Bundle_logger.info('Getting bundle payload: %s', self.payload)
+        self.Bundle_logger.classLog('Getting bundle payload: '+ str(self.payload), 'INFO')
+        # self.Bundle_logger.info('Getting bundle payload: %s', self.payload)
         return self.payload
 
     def stringToList(self, string):
-        self.Bundle_logger.info('Converting string to list...')
+        self.Bundle_logger.classLog('Converting string to list...', 'INFO')
         return string.split()
 
     def tupleToList(self, tupleData):
-        self.Bundle_logger.info('Converting tuple to list...')
+        self.Bundle_logger.classLog('Converting tuple to list...', 'INFO')
         return [str(x) for x in tupleData]
 
     def toString(self):
-        self.Bundle_logger.info('Converting to string: %s', self)
+        self.Bundle_logger.classLog('Converting to string...', 'DEBUG')
         return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload
 
     def toData(self):
-        self.Bundle_logger.info('Converting to data...')
+        self.Bundle_logger.classLog('Converting to data...', 'DEBUG')
         return [str(self.sid), str(self.payload)]

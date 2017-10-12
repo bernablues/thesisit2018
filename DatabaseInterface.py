@@ -1,39 +1,25 @@
 import MySQLdb
 import logging
-
+from SDTNLogger import SDTNLogger
 
 
 class DatabaseInterface:
 
-    logging.basicConfig(level=logging.DEBUG)
-    DBI_logger = logging.getLogger(__name__)
-
-    DBI_logger.setLevel(logging.INFO)
-
-    # create a file handler
-    DBI_handler = logging.FileHandler('DBI.log')
-    DBI_handler.setLevel(logging.INFO)
-
-    # create a logging format
-    DBI_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    DBI_handler.setFormatter(DBI_formatter)
-
-    # add the handlers to the logger
-    DBI_logger.addHandler(DBI_handler)
-
     def __init__(self, table, database, user, password):
-        self.DBI_logger.info('Initializing DBI...')
+        self.DBI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
+        self.DBI_logger.classLog('Initializing DBI...', 'INFO')
 
         self.table = table
         self.database = database
         self.user = user
         self.password = password
 
-        self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
+        # self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
+        self.DBI_logger.classLog('DBI initialized: db_name: ' + str(self.database) + ' table_name: ' + str(self.table_name) + ' user: ' + str(self.user), 'INFO') 
 
     def __openDatabase(self):
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
-        self.DBI_logger.info('Opening db: %s localhost: %s', self.database, self.user)
+        self.DBI_logger.classLog('Opening db: ' + str(self.database) + ' localhost: ' + str(self.user), 'INFO')        
         return db
 
     def insertRow(self, data):
@@ -43,43 +29,43 @@ class DatabaseInterface:
         sql = "INSERT INTO " + self.table + " (sid, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)                                                                                                                                             
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
+            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
 
-            self.DBI_logger.info('Committing to db: %s', self)
+            self.DBI_logger.classLog('Committing to db...', 'INFO')
             db.commit()
-            self.DBI_logger.info('Successfully committed to db: %s', self)
+            self.DBI_logger.classLog('Successfully committed to db.', 'INFO')
         except:
-            self.DBI_logger.warning('DB (%s) Rollback', self)
+            self.DBI_logger.classLog('DB Rollback', 'WARNING')
             print 'DB Rollback'
             db.rollback()
         
-        self.DBI_logger.info('Closing db: %s', self)
+        self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
 
     def getRowCount(self):
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        self.DBI_logger.info('Getting row count from db: %s', self)
+        self.DBI_logger.classLog('Getting row count from db...', 'INFO')
         sql = "SELECT COUNT(*) FROM " + self.table
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
 
             results = cursor.fetchone()
 
-            self.DBI_logger.info('Row count: %s', results)
+            self.DBI_logger.classLog('Row count: ' + str(results), 'INFO')
 
 
         except:
             print "DB Error"
-            self.DBI_logger.warning('DB Error: getting row count')
+            self.DBI_logger.classLog('DB Error: getting row count', 'WARNING')
             
-        self.DBI_logger.info('Closing db: %s', self)
+        self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
 
         return results[0]
@@ -88,7 +74,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        self.DBI_logger.info('Getting rows from db: %s', self)
+        self.DBI_logger.classLog('Getting rows from db...', 'INFO')
         sql = "SELECT sid, payload FROM " + self.table
 
         if isReversed:
@@ -97,18 +83,18 @@ class DatabaseInterface:
         sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
-
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
+            
             results = cursor.fetchall()
-            self.DBI_logger.info('Rows: %s', results)
+            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO' )
 
         except:
             print "DB Error"
             self.DBI_logger.warning('DB Error: getting row count')
-            
-        self.DBI_logger.info('Closing db: %s', self)
+        
+        self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
 
         return results
@@ -117,23 +103,23 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        self.DBI_logger.info('Getting nth (%s) row from db: %s', n, self)
+        self.DBI_logger.classLog('Getting nth (' + n + ') row from db...', 'INFO')
         sql = "SELECT sid, payload FROM " + self.table
         sql = "SELECT * FROM " + self.table + " ORDER BY id LIMIT n-1,1"
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
 
             results = cursor.fetchall()
-            self.DBI_logger.info('Rows: %s', results)
+            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO' )
 
         except:
             print "DB Error"
-            self.DBI_logger.warning('DB Error: getting nth row')
+            self.DBI_logger.classLog('DB Error: getting nth row', 'WARNING')
             
-        self.DBI_logger.info('Closing db: %s', self)
+        self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
 
         return results
@@ -143,24 +129,24 @@ class DatabaseInterface:
         cursor = db.cursor()
 
 
-        self.DBI_logger.info('Getting all rows from db: %s', self)
+        self.DBI_logger.classLog('Getting all rows from db...' , 'INFO')
         sql = "SELECT sid, payload FROM " + self.table
         
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
 
             results = cursor.fetchall()
-            self.DBI_logger.info('Rows: %s', results)
+            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO')
         except:
             print "DB Error"
-            self.DBI_logger.warning('Getting all rows from db: %s', self)
+            self.DBI_logger.warning('Getting all rows from db...' , 'INFO')
 
-        self.DBI_logger.info('Closing db: %s', self)
+        self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
 
         return results
@@ -169,7 +155,7 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
-        self.DBI_logger.info('Deleting n (%s) rows from db: %s', numberOfRows, self)
+        self.DBI_logger.classLog('Deleting n (' + str(numberOfRows) + ') row from db...', 'INFO')
         sql = "DELETE FROM " + self.table 
         
         if isReversed:
@@ -178,20 +164,20 @@ class DatabaseInterface:
         sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
-            self.DBI_logger.info('Executing SQL command: %s', sql)
-            cursor.execute(sql)                                                                                                                                             
-            self.DBI_logger.info('Successfully executed SQL command: %s', sql)
+            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            cursor.execute(sql)
+            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
 
-            self.DBI_logger.info('Committing to db: ', self)
+            self.DBI_logger.classLog('Committing to db.', 'INFO')
             db.commit()
-            self.DBI_logger.info('Successfully committed to db: ', self)
+            self.DBI_logger.classLog('Successfully committed to db.', 'INFO')
 
         except:
 
-            self.DBI_logger.warning('DB (%s) rollback', self)
+            self.DBI_logger.classLog('DB rollback', 'WARNING')
             db.rollback()
-            self.DBI_logger.warning('Deleting n (%s) rows from db: %s', numberOfRows, self)
+            self.DBI_logger.classLog('Deleting n (' + str(numberOfRows) + ') rows from db.', 'WARNING')
             print "DB Error"
 
-        self.DBI_logger.info('Closing db: %s', self)
+        self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()

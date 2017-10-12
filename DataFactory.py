@@ -4,64 +4,58 @@
 # dropping protocol to be used (First, Last, Random, Current),
 # number of seconds to generate new entry,
 # number of seconds to send data
+
 import time
 import logging
-
-logging.basicConfig(level=logging.DEBUG)
-DF_logger = logging.getLogger(__name__)
-
-DF_logger.setLevel(logging.INFO)
-
-# create a file handler
-DF_handler = logging.FileHandler('DF.log')
-DF_handler.setLevel(logging.INFO)
-
-# create a logging format
-DF_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-DF_handler.setFormatter(DF_formatter)
-
-# add the handlers to the logger
-DF_logger.addHandler(DF_handler)
+from SDTNLogger import SDTNLogger
 
 class DataFactory:
+    
     def __init__(self, dataSize, timeToGenerate, sid, dataManager):
-        self.DF_logger.info('Initializing DF')
+        self.DF_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
+        self.DF_logger.classLog('Initializing DF...', 'INFO')
         
         self.dataManager = dataManager
         self.dataSize = dataSize
         self.timeToGenerate = timeToGenerate
         self.sid = sid
 
-        self.DF_logger.info('DF initialized: data_size (in bytes): %s time_to_generate: %s sid: %s data_mgr: %s', dataSize, timeToGenerate, sid, dataManager)
+        # self.msg = 'DF initialized: data_size (in bytes):"+ %s+ "time_to_generate: "+%s "sid: "+ %r "data_mgr: "+ %r', self.dataSize, self.timeToGenerate, %self.sid, %self.dataManager
+        # self.msg = ('DF initialized: data_size (in bytes): %(self.dataSize)s time_to_generate: %(self.timeToGenerate)s sid: %(self.sid)s data_mgr: %(self.dataManager)s')
+        # self.msg = ('DF initialized: data_size (in bytes): '+ str(self.dataSize) +' time_to_generate: '+ str(self.timeToGenerate) +' sid: '+ str(self.sid) +' data_mgr: '+ str(self.dataManager))
+        
+        self.DF_logger.classLog('DF initialized: data_size (in bytes): '+ str(self.dataSize) +' time_to_generate: '+ str(self.timeToGenerate) +' sid: '+ str(self.sid) +' data_mgr: '+ str(self.dataManager), 'INFO')
 
     def printProperties(self):
         print 'DATA FACTORY PROPERTIES:'
         print 'Size of data (in bytes):', self.dataSize
         print 'Time to generate data (in seconds):', self.timeToGenerate
         print '========'
-        self.DF_logger.info('DATA FACTORY PROPERTIES:')
-        self.DF_logger.info('Size of data (in bytes):', self.dataSize)
-        self.DF_logger.info('Time to generate data (in seconds):', self.timeToGenerate)
-        self.DF_logger.info('========')
+        self.DF_logger.classLog('DATA FACTORY PROPERTIES:', 'INFO')
+        self.DF_logger.classLog('Size of data (in bytes): '+ str(self.dataSize), 'INFO')
+        self.DF_logger.classLog('Time to generate data (in seconds):'+ str(self.timeToGenerate), 'INFO')
+        self.DF_logger.classLog('========', 'INFO')
 
     def generateEntry(self):
-        self.DF_logger.info('Generating entry:')
+        self.DF_logger.classLog('Generating entry:', 'INFO')
         payload = 'x' * self.dataSize
         entry = [str(self.sid), payload]
-        self.DF_logger.info('Successfully generated entry: %s', entry)
+        self.DF_logger.classLog('Successfully generated entry.', 'INFO')
+        self.DF_logger.classLog('Entry is '+ entry, 'DEBUG')
+        
         return entry
 
     def pushEntry(self, entry):
-        self.DF_logger.info('Pushing entry: %s',entry)
+        self.DF_logger.classLog('Pushing entry...', 'INFO')
         self.dataManager.insertData(entry)
-        self.DF_logger.info('Successfully pushed entry: %s',entry)
+        self.DF_logger.classLog('Successfully pushed entry.', 'INFO')
         return True        
 
     def start(self):
-        self.DF_logger.info('Starting data factory...')
+        self.DF_logger.classLog('Starting data factory...', 'INFO')
         while True:
             time.sleep(self.timeToGenerate)
             entry = self.generateEntry()
             self.pushEntry(entry)
-        self.DF_logger.info('Ended data factory...')
-        
+        self.DF_logger.classLog('Successfully ended data factory.', 'INFO')
+

@@ -1,0 +1,5 @@
+2017-10-12 13:43:34,219 - DataFactory - INFO - Initializing DF
+2017-10-12 13:48:20,039 - DataFactory - INFO - Initializing DF
+2017-10-12 13:48:20,040 - DataFactory - INFO - ('DF initialized: data_size (in bytes): %s time_to_generate: %s sid: %s data_mgr: %s', 1, 1, 1, None)
+2017-10-12 13:49:29,160 - DataFactory - INFO - Initializing DF
+2017-10-12 13:49:29,161 - DataFactory - INFO - ('DF initialized: data_size (in bytes): %s time_to_generate: %s sid: %s data_mgr: %s', 2, 2, 2, None)
