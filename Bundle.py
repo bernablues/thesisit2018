@@ -27,7 +27,7 @@ class Bundle:
         self.payload = bundleData[3]
 
         self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
-        # self.Bundle_logger.classLog("Bundle initialized: type: %s seq: %s SID: %s payload: %s, self.type, self.seq, self.sid, self.payload", 'INFO') 
+        # self.Bundle_logger.classLog("Bundle initialized: type: %s seq: %s SID: %s payload: %s, self.type, self.seq, self.sid, self.payload", 'INFO')
 
     def getBundleProperties(self):
         self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
