@@ -20,7 +20,6 @@ class DatabaseInterface:
         cursor = db.cursor()
         # To be improved, assumes column names. Could use dictionaries for key->value pairs.
         sql = "INSERT INTO " + self.table + " (" + ', '.join(self.columns) + ") VALUES (" + self.__dataToSqlString(data) + ")"
-        print sql
         try:
             cursor.execute(sql)
             db.commit()

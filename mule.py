@@ -20,10 +20,11 @@ class Mule:
         self.DATABASE_NAME = 'sdtn'
         self.MYSQL_USER = 'sdtn'
         self.MYSQL_PASSWORD = 'password'
+        self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
         self.conman = ConnectionManager(5, 'wlan0', 5000, 10000)
-        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD)
-        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi)
+        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
+        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi, 5)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = BundleFlowInterface(self.dataSocket)
 
@@ -55,8 +56,9 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
-                print bundle.toString()
-                self.dataMan.insertData(bundle.toData())
+                data = self.dataMan.sliceData(bundle.toData()[1])
+                for each in data:
+                    self.dataMan.insertData(each)
                 self.acknowledge(bundle)
             except KeyboardInterrupt:
                 print "Keyboard interrupted. Terminating from mule." 

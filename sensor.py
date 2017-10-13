@@ -25,7 +25,7 @@ class Sensor:
         self.conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
         self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi, 5)
-        self.dataFactory = DataFactory(1, 3, self.SID, self.dataMan)
+        self.dataFactory = DataFactory(1, 1, self.SID, self.dataMan)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = None
 
@@ -94,8 +94,6 @@ class Sensor:
 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
-                if self.conman.acknowledgementTimeout():
-                    break
 
         # end = time.time()
         # timeElapsed = end-start

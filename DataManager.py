@@ -90,5 +90,21 @@ class DataManager:
             self.dbInterface.deleteRows(self.bundleSize)
         return data
 
+
+    def sliceData(self, data):
+        # Fix this when bundle headers are defined
+        timestampLength = 18
+        seqNumberLength = 1
+        dataLength = 1
+        rowLength = timestampLength + seqNumberLength + dataLength
+
+        payload = data
+        payload = [payload[i: i + rowLength] for i in range(0, len(payload), rowLength)]
+        slicedData = []
+
+        for each in payload:
+            slicedData.append([each[0:10] + ' ' + each[10:18], each[18:19], each[19:20]])
+        return slicedData
+
     def getAllData(self):
         return self.dbInterface.getAllRows()

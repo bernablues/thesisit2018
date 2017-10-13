@@ -32,7 +32,13 @@ class Bundle:
         return self.payload
 
     def stringToList(self, string):
-        return string.split()
+        bundleData = string.split()
+        bundleType = bundleData[0]
+        seq = bundleData[1]
+        sid = bundleData[2]
+        data = ''
+        data = ''.join(bundleData[3:])
+        return [bundleType, seq, sid, data]
 
     def tupleToList(self, tupleData):
         headers = tupleData[0]
