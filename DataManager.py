@@ -25,13 +25,13 @@ class DataManager:
         self.equalizeMaxEntries() #Needed for drop current protocol
         # DataMan_logger.info("DataManager initialized: {} (${})".format(self.maxEntries, self.dbInterface))
         # self.DataMan_logger.info('DataMan initialized: max_entries: %s  %s DBI: %S', maxEntries, droppingProtocol, dbInterface)
-        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.maxEntries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
+        self.DataMan_logger.classLog('DataMan initialized:,max_entries:,' + str(self.maxEntries) + ',dropping_protocol:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
 
     def printProperties(self):
         print 'Maximum number of entries:', self.maxEntries
         print 'Chosen dropping protocol:', self.droppingProtocol
         print '========'
-        self.DataMan_logger.classLog('DataMan initialized: max_entries: ' + str(self.maxEntries) + ' dropping_protocol: ' + str(self.droppingProtocol) + ' DBI: ' + str(self.dbInterface), 'INFO')
+        self.DataMan_logger.classLog('DataMan initialized:,max_entries:,' + str(self.maxEntries) + ',dropping_protocol:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
 
 
     def equalizeMaxEntries(self):
@@ -89,10 +89,10 @@ class DataManager:
     def isBufferFull(self):
         currentEntries = self.dbInterface.getRowCount()
         if self.maxEntries < currentEntries:
-            self.DataMan_logger.classLog('Buffer is full.', 'WARNING')
+            self.DataMan_logger.classLog('Buffer status:,FULL.', 'WARNING')
             return True
         else:
-            self.DataMan_logger.classLog('Buffer not yet full.', 'INFO')
+            self.DataMan_logger.classLog('Buffer status:,NOT YET FULL.', 'INFO')
             return False
 
     def getData(self, numberOfData, deleteData = False):

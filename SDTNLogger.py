@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 class SDTNLogger:
 
@@ -26,12 +27,15 @@ class SDTNLogger:
         # No explicit switch cases
 
         formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
+        currDateTime=datetime.now() 
+        currDateTime=currDate.strftime('%Y-%m-%d %H:%M:%S')
+
         self.degreeLevel = degreeLevel
 
         self.className = className
         self.className_logger = self.className+'_logger'
 
-        class_filename = './logs/Class_logs/'+self.className+'.log'
+        class_filename = './logs/Class_logs/'+currDate+'_'+self.className+'.csv'
         class_handler = logging.FileHandler(class_filename)        
         class_handler.setFormatter(formatter)
 
@@ -42,7 +46,7 @@ class SDTNLogger:
         for experiment in experiments:
             self.experiment = experiment
             self.experiment_logger = self.experiment+'_logger'
-            expt_filename = './logs/Experiment_logs/'+self.experiment+'.log'
+            expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
             expt_handler = logging.FileHandler(expt_filename)        
             expt_handler.setFormatter(formatter)
             self.className_logger.addHandler(expt_handler)

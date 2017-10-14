@@ -26,15 +26,16 @@ class Bundle:
         self.sid = bundleData[2]
         self.payload = bundleData[3]
 
-        self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
+        self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
         # self.Bundle_logger.classLog("Bundle initialized: type: %s seq: %s SID: %s payload: %s, self.type, self.seq, self.sid, self.payload", 'INFO')
 
     def getBundleProperties(self):
-        self.Bundle_logger.classLog('Bundle initialized: type: ' + str(self.type) + 'seq: ' + str(self.seq) + ' SID: ' + str(self.sid) + 'payload: ' + str(self.payload), 'INFO')
+        self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
+        
         return [self.type, self.sid, self.payload]
 
     def getType(self):
-        self.Bundle_logger.classLog('Getting bundle type: '+ str(self.type), 'INFO')
+        self.Bundle_logger.classLog('Getting bundle TYPE: '+ str(self.type), 'INFO')
         return self.type
 
     def getSID(self):
@@ -42,11 +43,11 @@ class Bundle:
         return self.sid
 
     def getSeq(self):
-        self.Bundle_logger.classLog('Getting Seq: '+ str(self.seq), 'INFO')
+        self.Bundle_logger.classLog('Getting SEQ: '+ str(self.seq), 'INFO')
         return self.seq
 
     def getPayload(self):
-        self.Bundle_logger.classLog('Getting bundle payload: '+ str(self.payload), 'INFO')
+        self.Bundle_logger.classLog('Getting bundle PAYLOAD: '+ str(self.payload), 'INFO')
         # self.Bundle_logger.info('Getting bundle payload: %s', self.payload)
         return self.payload
 

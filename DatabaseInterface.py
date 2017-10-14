@@ -15,11 +15,11 @@ class DatabaseInterface:
         self.password = password
 
         # self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
-        self.DBI_logger.classLog('DBI initialized: db_name: ' + str(self.database) + ' table_name: ' + str(self.table) + ' user: ' + str(self.user), 'INFO') 
+        self.DBI_logger.classLog('DBI initialized:,db_name:,' + str(self.database) + ',table_name:,' + str(self.table) + ',user:,' + str(self.user), 'INFO') 
 
     def __openDatabase(self):
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
-        self.DBI_logger.classLog('Opening db: ' + str(self.database) + ' localhost: ' + str(self.user), 'INFO')        
+        self.DBI_logger.classLog('Opening db:,' + str(self.database) + ',localhost:,' + str(self.user), 'INFO')        
         return db
 
     def insertRow(self, data):
@@ -29,9 +29,9 @@ class DatabaseInterface:
         sql = "INSERT INTO " + self.table + " (sid, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)                                                                                                                                             
-            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
 
             self.DBI_logger.classLog('Committing to db...', 'INFO')
             db.commit()
@@ -52,18 +52,18 @@ class DatabaseInterface:
         sql = "SELECT COUNT(*) FROM " + self.table
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
 
             results = cursor.fetchone()
 
-            self.DBI_logger.classLog('Row count: ' + str(results), 'INFO')
+            self.DBI_logger.classLog('Row count:,' + str(results), 'INFO')
 
 
         except:
             print "DB Error"
-            self.DBI_logger.classLog('DB Error: getting row count', 'WARNING')
+            self.DBI_logger.classLog('DB Error:,getting row count', 'WARNING')
             
         self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
@@ -83,16 +83,16 @@ class DatabaseInterface:
         sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql, 'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,'+ sql, 'INFO')
 
             results = cursor.fetchall()
-            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO' )
+            self.DBI_logger.classLog('Rows:,' + str(results), 'INFO' )
 
         except:
             print "DB Error"
-            self.DBI_logger.classLog('DB Error: getting row count', 'WARNING')
+            self.DBI_logger.classLog('DB Error:,getting row count', 'WARNING')
 
         self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
@@ -108,16 +108,16 @@ class DatabaseInterface:
         sql = "SELECT * FROM " + self.table + " ORDER BY id LIMIT n-1,1"
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql,'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,'+ sql,'INFO')
 
             results = cursor.fetchall()
-            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO' )
+            self.DBI_logger.classLog('Rows:,' + str(results), 'INFO' )
 
         except:
             print "DB Error"
-            self.DBI_logger.classLog('DB Error: getting nth row', 'WARNING')
+            self.DBI_logger.classLog('DB Error:,getting nth row', 'WARNING')
 
         self.DBI_logger.classLog('Closing db.', 'INFO')
         db.close()
@@ -135,12 +135,12 @@ class DatabaseInterface:
             sql = sql + ' ORDER BY id DESC'
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
 
             results = cursor.fetchall()
-            self.DBI_logger.classLog('Rows: ' + str(results), 'INFO')
+            self.DBI_logger.classLog('Rows:,' + str(results), 'INFO')
         except:
             print "DB Error"
             self.DBI_logger.classLog('Getting all rows from db...', 'WARNING')
@@ -163,9 +163,9 @@ class DatabaseInterface:
         sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
-            self.DBI_logger.classLog('Executing SQL command: ' + sql, 'INFO')
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            self.DBI_logger.classLog('Successfully executed SQL command: '+ sql, 'INFO')
+            self.DBI_logger.classLog('Successfully executed SQL command:,'+ sql, 'INFO')
 
             self.DBI_logger.classLog('Committing to db.', 'INFO')
             db.commit()

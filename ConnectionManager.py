@@ -30,7 +30,7 @@ class ConnectionManager:
         self.connected = False
         self.connectedTo = False
 
-        self.ConMan_logger.classLog('ConMan initialized: max_ack_timeout: ' + str(maxAckTimeout) + ' hello_port: ' + str(helloPort) + ' data_port: ' + str(dataPort) + ' own_IP_addr: ' + str(self.ownIpAddress), 'INFO')
+        self.ConMan_logger.classLog('ConMan initialized:,max_ack_timeout:,' + str(maxAckTimeout) + ',hello_port:,' + str(helloPort) + ',data_port:,' + str(dataPort) + ',own_IP_addr:,' + str(self.ownIpAddress), 'INFO')
 
     def __getOwnIpAddress(self, ifname):
         self.ConMan_logger.classLog('Getting own IP addr...', 'INFO')
@@ -46,7 +46,7 @@ class ConnectionManager:
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.bind((address, port))
-        self.ConMan_logger.classLog('Created socket at addr: ' + str(address) + ' and port: ' + str(port), 'INFO')
+        self.ConMan_logger.classLog('Created socket:,ADDR:,' + str(address) + ',PORT:,' + str(port), 'INFO')
         return sock
     
     def __createDataSocket(self):
@@ -72,7 +72,7 @@ class ConnectionManager:
         self.helloSocket = self.__createHelloSocket()
 
     def __initializeConnection(self, address):
-        self.ConMan_logger.classLog('Initializeditializing connection...', 'INFO')
+        self.ConMan_logger.classLog('Initializing connection...', 'INFO')
         self.currentAckTimeout = 0
         self.connected = True
         self.connectedTo = address
@@ -102,7 +102,7 @@ class ConnectionManager:
         print "Listening for hello..."
         bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
         fromAddress, fromPort = fromSocket
-        self.ConMan_logger.classLog('Received hello: ' + bundleData + ' from ' + str(fromAddress), 'INFO')
+        self.ConMan_logger.classLog('Received hello:,bundleData:,' + bundleData + ',from ADDR:,' + str(fromAddress), 'INFO')
         print "Received hello:", bundleData, 'from', fromAddress
         self.__initializeConnection(fromAddress)
 
@@ -125,7 +125,7 @@ class ConnectionManager:
         thread = threading.Thread(target=self.__sendHello, args=(helloSocket,))
         thread.daemon = True
 
-        self.ConMan_logger.classLog('Hello thread initialized: Hello socket: ' + str(helloSocket), 'INFO')
+        self.ConMan_logger.classLog('Hello thread initialized:,Hello socket:,' + str(helloSocket), 'INFO')
         print "Initialized hello thread."
         return thread
 
@@ -140,10 +140,10 @@ class ConnectionManager:
         return helloThread
 
     def acknowledgementTimeout(self):
-        self.ConMan_logger.classLog('Ack timeout occured.', 'INFO')   
+        self.ConMan_logger.classLog('Ack timeout:,OCCURRED.', 'INFO')   
         self.currentAckTimeout += 1
         if self.currentAckTimeout == self.maxAckTimeout:
-            self.ConMan_logger.classLog('Max ack timeout reached.', 'WARNING')
+            self.ConMan_logger.classLog('Ack timeout:,MAX ACK TIMEOUT REACHED.', 'WARNING')
             print 'Max ack timeout reached. Terminating connection...'
             self.__terminateConnection()
             return True
