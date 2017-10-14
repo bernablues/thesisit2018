@@ -62,8 +62,10 @@ class ConnectionManager:
     def __terminateConnection(self):
         self.connected = False
         self.connectedTo = False
-        self.__resetHelloSocket()
-        self.__resetHelloBundleFlowInterface()
+        self.__emptyHelloSocket()
+        # THIS WILL BE A PROBLEM WHEN THERE ARE MULTIPLE HELLO BROADCAST IN RANGE
+        # self.__resetHelloSocket()
+        # self.__resetHelloBundleFlowInterface()
 
     def getDataSocket(self):
         return self.dataSocket
@@ -92,6 +94,16 @@ class ConnectionManager:
             # Make this parametizable
             sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
 
+    def __emptyHelloSocket(self):
+        # problematic
+        self.helloSocket.settimeout(0.001)
+        while True:
+            try:
+                self.helloSocket.recvfrom(4)
+            except:
+                break
+        self.helloSocket.settimeout(None)
+
     def __initializeHelloThread(self):
         helloSocket = self.getHelloSocket()
         helloSocket.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
@@ -115,6 +127,13 @@ class ConnectionManager:
         if self.currentAckTimeout == self.maxAckTimeout:
             print 'Max ack timeout reached. Terminating connection...'
             self.__terminateConnection()
+            return True
+        else:
+            return False
+
+    def initializeConnection(self, bundle, address):
+        if bundle.getType() == '3':
+            self.__initializeConnection(address)
             return True
         else:
             return False

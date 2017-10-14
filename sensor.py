@@ -68,13 +68,13 @@ class Sensor:
         terminated = False
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
-            fromAddress = bundleData[1]
-            bundleData = bundleData[0]
 
             if not bundleData:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:
+                fromAddress = bundleData[1]
+                bundleData = bundleData[0]
                 if bundleData.split()[0] == '0':
                     self.currentSeq += 1
                     return bundle

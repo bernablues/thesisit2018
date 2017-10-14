@@ -5,98 +5,121 @@ import threading
 from DataFactory import DataFactory
 from DatabaseInterface import DatabaseInterface
 from ConnectionManager import ConnectionManager
+from BundleFlowInterface import BundleFlowInterface
+from DataManager import DataManager   
+from Bundle import Bundle
 
-SERVER_ADDRESS = '172.24.1.1'
-SID = 1
-DATA_PORT = 10000
-HELLO_PORT = 5000
+class Station:
 
-TABLE_NAME = 'generated_sensor_data'
-DATABASE_NAME = 'sdtn'
-MYSQL_USER = 'sdtn'
-MYSQL_PASSWORD = 'thesisit'
+    def __init__(self):
+        self.SID = 1
+        self.DATA_PORT = 10000
+        self.HELLO_PORT = 5000
 
-conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
-dbi = DatabaseInterface(TABLE_NAME, DATABASE_NAME, MYSQL_USER, MYSQL_PASSWORD)
-dataFactory = DataFactory(5, 1, dbi)
+        self.TABLE_NAME = 'sensor_data'
+        self.DATABASE_NAME = 'sdtn'
+        self.MYSQL_USER = 'sdtn'
+        self.MYSQL_PASSWORD = 'thesisit'
+        self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
-def confirmAcknowledgement(sock, message):
-    terminated = False
-    data = False
-    while True:
-        try:
-            sock.settimeout(3)
-            data, addr = sock.recvfrom(16) # throws exception when timeout
-        except:
-            sock.settimeout(None)
-            terminated = conman.acknowledgementTimeout()
-            
-        if terminated:
-            return False
-        elif data:
-            break
-        else:
-            sendMessage(sock, 1, message)
+        self.conman = ConnectionManager(5, 'wlan0', 5000, 10000)
+        self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
+        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi, 5)
+        self.dataFactory = DataFactory(1, 1, self.SID, self.dataMan)
+        self.dataSocket = self.conman.getDataSocket()
+        self.bfi = None
+
+        self.currentSeq = 1
+
+    def sendNext(self):
+        data = self.dataMan.getData(True)
+        dataBundle = self.appendHeaders(1, data)
+        bundle = Bundle(dataBundle)
+        self.bfi.sendBundle(bundle)
+        return bundle
         
-    print "Received message:", data
-    data = data.split()
-    ackSeq = int(data[1])
-    pType = int(data[0])
-    print "Message is Type:", pType, "Seq:", ackSeq, "\n"
 
-    if pType != 0:
-        return False
-    elif ackSeq != message[0]:
-        return False
-    else:
-        return True
+    def appendHeaders(self, bundleType, data):
+        headers = (bundleType, self.currentSeq, self.SID)
+        bundleData = (headers, data)
+        return bundleData
 
-def sendMessage(sock, pType, message):
-    message = str(pType) + " " + str(SID) + " " + str(message[0]) + " " + str(message[1])
-    print >> sys.stderr, 'Sending', message
-    print ""
-    sock.sendto(message, (SERVER_ADDRESS, DATA_PORT))
+    def redirect(self, bundle):
+        if bundle.getType() == 0:
+            if self.currentSeq == bundle.getSeq():
+                self.sendNext()
+            else:
+                pass
+                # resend(bundle)
+        else:
+            pass
 
-def processMessage(message):
-    data = message.split()
-    print "Type:", data[0], "SID:", data[1], "SEQ:", data[2], "Payload:", data[3], "\n"
-    dbi.insertMessage(data)
-    return True, int(data[0]), data[1], int(data[2])
+    def checkConnection(self):
+        if not self.conman.isConnected():
+            self.conman.listenForHello()
+            self.bfi = BundleFlowInterface(self.dataSocket, self.conman.getConnectedTo())
+            receiveBundle = self.sendReceiveBundle()
+            bundle = self.expectAck(receiveBundle)
+        else:
+            return True
+
+    def resendBundle(self, bundle):
+        self.bfi.sendBundle(bundle)
+
+    def expectAck(self, bundle):
+        terminated = False
+        while not terminated:
+            bundleData = self.bfi.receiveBundle(3)
+            fromAddress = bundleData[1]
+            bundleData = bundleData[0]
+
+            if not bundleData:
+                self.resendBundle(bundle)
+                terminated = self.conman.acknowledgementTimeout()
+            else:
+                if bundleData.split()[0] == '0':
+                    self.currentSeq += 1
+                    return bundle
+                else:
+                    continue
+    
+    def sendReceiveBundle(self):
+        bundleData = '3 ' + ' 0 ' + ' x ' + ' x' #does not work when two headers only
+        bundle = Bundle(bundleData)
+        self.bfi.sendBundle(bundle)
+        return bundle
+
+    def acknowledge(self, bundle):
+        bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x' #does not work when two headers only
+        ack = Bundle(bundleData)
+        self.bfi.sendBundle(ack)
+
+    def start(self):
+        while True:
+            self.checkConnection()
+            time.sleep(2)
+            try:
+                bundleData, fromSocket = self.bfi.receiveBundle()
+                fromAddress, fromPort = fromSocket
+                self.bfi.setToAddress(fromAddress)
+                bundle = Bundle(bundleData)
+
+                data = self.dataMan.sliceData(bundle.toData()[1])
+                for each in data:
+                    self.dataMan.insertData(each)
+                self.acknowledge(bundle)
 
 
-def acknowledge(sock, sequenceNumber):
-    acknowledgement = "0 " + str(sequenceNumber)
-    sock.sendto(acknowledgement, ('172.24.1.1', DATA_PORT))
-    print 'Sending', acknowledgement, "\n"
+            except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
+                print "Not reachable"
 
 def main():
+    station = Station()
 
-    dataSocket = conman.getDataSocket()
-
-    while True:
-        if not conman.isConnected():
-            conman.listenForHello()
-        time.sleep(2)
-        try:
-            sendMessage(dataSocket, 3, [1, ''])
-            data, addr = dataSocket.recvfrom(4082)
-            if data:
-                print 'Received messaged:', data
-                success, ptype, recvMessage, recvSeq = processMessage(data)
-                if ptype != 1:
-                    print "Expecting Type: 1, received Type:", ptype
-                else:
-                    acknowledge(dataSocket, recvSeq)
-            else:
-                print 'Disconnected?'
-                break
-        
-        except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
-            print "Not reachable\n"
+    station.start()
     
 def test():
     print "TEST MODE"
-    conman = ConnectionManager(5, 'wlp2s0', 5000, 10000)
 
 if __name__ == "__main__":
     main()
