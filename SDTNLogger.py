@@ -25,7 +25,7 @@ class SDTNLogger:
         # Outputs to multiple files simultaneously
         # No explicit switch cases
 
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
         self.degreeLevel = degreeLevel
 
         self.className = className
