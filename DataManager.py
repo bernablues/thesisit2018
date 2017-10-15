@@ -15,8 +15,10 @@ class DataManager:
     # DROP_RANDOM_PROTOCOL = 2
     DROP_CURRENT_PROTOCOL = 3
 
-    def __init__(self, maxEntries, droppingProtocol, dbInterface):
-        self.DataMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
+    def __init__(self, maxEntries, droppingProtocol, dbInterface, experiments):
+        # self.DataMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        self.DataMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+
         self.DataMan_logger.classLog('Initializing DataMan...', 'INFO')
 
         self.maxEntries = maxEntries
@@ -25,14 +27,13 @@ class DataManager:
         self.equalizeMaxEntries() #Needed for drop current protocol
         # DataMan_logger.info("DataManager initialized: {} (${})".format(self.maxEntries, self.dbInterface))
         # self.DataMan_logger.info('DataMan initialized: max_entries: %s  %s DBI: %S', maxEntries, droppingProtocol, dbInterface)
-        self.DataMan_logger.classLog('DataMan initialized:,max_entries:,' + str(self.maxEntries) + ',dropping_protocol:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
+        self.DataMan_logger.classLog('DataMan initialized:,MAX_ENTRIES:,' + str(self.maxEntries) + ',DROPPING_PROTOCOL:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
 
     def printProperties(self):
         print 'Maximum number of entries:', self.maxEntries
         print 'Chosen dropping protocol:', self.droppingProtocol
         print '========'
-        self.DataMan_logger.classLog('DataMan initialized:,max_entries:,' + str(self.maxEntries) + ',dropping_protocol:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
-
+        self.DataMan_logger.classLog('DataMan initialized:,MAX_ENTRIES:,' + str(self.maxEntries) + ',DROPPING_PROTOCOL:,' + str(self.droppingProtocol) + ',DBI:,' + str(self.dbInterface), 'INFO')
 
     def equalizeMaxEntries(self):
         self.DataMan_logger.classLog('Equalizing max_entries...', 'INFO')
@@ -53,17 +54,17 @@ class DataManager:
         pass
 
     def dropFirst(self):
-        self.DataMan_logger.classLog('Dropping first data...', 'WARNING')
+        self.DataMan_logger.classLog('Dropping FIRST_DATA...', 'WARNING')
         first = self.dbInterface.getRows(1)
         self.dbInterface.deleteRows(1)
-        self.DataMan_logger.classLog('Successfully dropped first data.', 'WARNING')
+        self.DataMan_logger.classLog('Successfully dropped:,FIRST_DATA.', 'WARNING')
         return first
 
     def dropLast(self):
-        self.DataMan_logger.classLog('Dropping last data...', 'WARNING')
+        self.DataMan_logger.classLog('Dropping LAST_DATA...', 'WARNING')
         last = self.dbInterface.getRows(1, True)
         self.dbInterface.deleteRows(1, True)
-        self.DataMan_logger.classLog('Successfully dropped last data.', 'WARNING')
+        self.DataMan_logger.classLog('Successfully dropped:,LAST_DATA.', 'WARNING')
         return last
 
     # def dropRandom(self):
@@ -89,10 +90,10 @@ class DataManager:
     def isBufferFull(self):
         currentEntries = self.dbInterface.getRowCount()
         if self.maxEntries < currentEntries:
-            self.DataMan_logger.classLog('Buffer status:,FULL.', 'WARNING')
+            self.DataMan_logger.classLog('Buffer full:,TRUE.', 'WARNING')
             return True
         else:
-            self.DataMan_logger.classLog('Buffer status:,NOT YET FULL.', 'INFO')
+            self.DataMan_logger.classLog('Buffer full:,FALSE.', 'INFO')
             return False
 
     def getData(self, numberOfData, deleteData = False):

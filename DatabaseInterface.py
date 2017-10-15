@@ -2,11 +2,14 @@ import MySQLdb
 import logging
 from SDTNLogger import SDTNLogger
 
+# For refactoring, pwedeng mag assign ng errors to lessen storageof logs, instead of strings, just use number/letters
 
 class DatabaseInterface:
 
-    def __init__(self, table, database, user, password):
-        self.DBI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
+    def __init__(self, table, database, user, password, experiments):
+        # self.DBI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        self.DBI_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+
         self.DBI_logger.classLog('Initializing DBI...', 'INFO')
 
         self.table = table
@@ -15,7 +18,7 @@ class DatabaseInterface:
         self.password = password
 
         # self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
-        self.DBI_logger.classLog('DBI initialized:,db_name:,' + str(self.database) + ',table_name:,' + str(self.table) + ',user:,' + str(self.user), 'INFO') 
+        self.DBI_logger.classLog('DBI initialized:,DB_NAME:,' + str(self.database) + ',TABLE_NAME:,' + str(self.table) + ',USER:,' + str(self.user), 'INFO') 
 
     def __openDatabase(self):
         db = MySQLdb.connect('localhost', self.user, self.password, self.database)
@@ -92,7 +95,7 @@ class DatabaseInterface:
 
         except:
             print "DB Error"
-            self.DBI_logger.classLog('DB Error:,getting row count', 'WARNING')
+            self.DBI_logger.classLog('DB Error:,getting rowst', 'WARNING')
 
         self.DBI_logger.classLog('Closing db.','INFO')
         db.close()

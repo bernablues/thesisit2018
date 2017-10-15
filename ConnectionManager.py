@@ -9,9 +9,10 @@ from SDTNLogger import SDTNLogger
 
 class ConnectionManager:
 
-    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort):
+    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments):
 
-        self.ConMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        # self.ConMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        self.ConMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.ConMan_logger.classLog('Initializing ConMan...', 'INFO')
 
         self.maxAckTimeout = maxAckTimeout
@@ -30,7 +31,7 @@ class ConnectionManager:
         self.connected = False
         self.connectedTo = False
 
-        self.ConMan_logger.classLog('ConMan initialized:,max_ack_timeout:,' + str(maxAckTimeout) + ',hello_port:,' + str(helloPort) + ',data_port:,' + str(dataPort) + ',own_IP_addr:,' + str(self.ownIpAddress), 'INFO')
+        self.ConMan_logger.classLog('ConMan initialized:,MAX_ACK-TIMEOUT:,' + str(maxAckTimeout) + ',hello_port:,' + str(helloPort) + ',data_port:,' + str(dataPort) + ',own_IP_addr:,' + str(self.ownIpAddress), 'INFO')
 
     def __getOwnIpAddress(self, ifname):
         self.ConMan_logger.classLog('Getting own IP addr...', 'INFO')

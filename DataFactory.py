@@ -11,8 +11,10 @@ from SDTNLogger import SDTNLogger
 
 class DataFactory:
     
-    def __init__(self, dataSize, timeToGenerate, sid, dataManager):
-        self.DF_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')    
+    def __init__(self, dataSize, timeToGenerate, sid, dataManager, experiments):
+        # self.DF_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        self.DF_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+
         self.DF_logger.classLog('Initializing DF...', 'INFO')
 
         self.dataManager = dataManager
@@ -24,7 +26,7 @@ class DataFactory:
         # self.msg = ('DF initialized: data_size (in bytes): %(self.dataSize)s time_to_generate: %(self.timeToGenerate)s sid: %(self.sid)s data_mgr: %(self.dataManager)s')
         # self.msg = ('DF initialized: data_size (in bytes): '+ str(self.dataSize) +' time_to_generate: '+ str(self.timeToGenerate) +' sid: '+ str(self.sid) +' data_mgr: '+ str(self.dataManager))
         
-        self.DF_logger.classLog('DF initialized: data_size (in bytes):,' + str(self.dataSize) + ',time_to_generate:,' + str(self.timeToGenerate) + ',sid:,' + str(self.sid) + ',data_mgr:,' + str(self.dataManager), 'INFO')
+        self.DF_logger.classLog('DF initialized:,DATA_SIZE (in bytes):,' + str(self.dataSize) + ',TIME_TO_GENERATE:,' + str(self.timeToGenerate) + ',SID:,' + str(self.sid) + ',DATA_MGR:,' + str(self.dataManager), 'INFO')
 
     def printProperties(self):
         print 'DATA FACTORY PROPERTIES:'
@@ -32,23 +34,23 @@ class DataFactory:
         print 'Time to generate data (in seconds):', self.timeToGenerate
         print '========'
         self.DF_logger.classLog('DATA FACTORY PROPERTIES:', 'INFO')
-        self.DF_logger.classLog('Size of data (in bytes):,' + str(self.dataSize), 'INFO')
-        self.DF_logger.classLog('Time to generate data (in seconds):,' + str(self.timeToGenerate), 'INFO')
+        self.DF_logger.classLog('DATA_SIZE (in bytes):,' + str(self.dataSize), 'INFO')
+        self.DF_logger.classLog('TIME_TO_GENERATE (in seconds):,' + str(self.timeToGenerate), 'INFO')
         self.DF_logger.classLog('========,', 'INFO')
 
     def generateEntry(self):
-        self.DF_logger.classLog('Generating entry:', 'INFO')
+        self.DF_logger.classLog('Generating ENTRY:', 'INFO')
         payload = 'x' * self.dataSize
         entry = [str(self.sid), payload]
-        self.DF_logger.classLog('Successfully generated entry.', 'INFO')
-        self.DF_logger.classLog('Entry is,' + entry, 'DEBUG')
+        self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
+        self.DF_logger.classLog('Entry is:,' + entry, 'DEBUG')
         
         return entry
 
     def pushEntry(self, entry):
-        self.DF_logger.classLog('Pushing entry...', 'INFO')
+        self.DF_logger.classLog('Pushing ENTRY...', 'INFO')
         self.dataManager.insertData(entry)
-        self.DF_logger.classLog('Successfully pushed entry.', 'INFO')
+        self.DF_logger.classLog('Successfully pushed ENTRY.', 'INFO')
         return True        
 
     def start(self):

@@ -3,8 +3,12 @@ from SDTNLogger import SDTNLogger
 
 class BundleFlowInterface:
 
-    def __init__(self, sock, toAddress=None):
-        self.BFI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+    def __init__(self, sock, toAddress=None, experiments):
+        # self.BFI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+        
+        # self.BFI_logger = SDTNLogger(self.__class__.__name__, ['x','x'], 'INFO')
+        self.BFI_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
+
         self.BFI_logger.classLog('Initializing BFI...', 'INFO')
 
         self.toAddress = toAddress
@@ -30,7 +34,7 @@ class BundleFlowInterface:
         self.BFI_logger.classLog('Receiving bundle...', 'INFO')
         if timeout:
             self.sock.settimeout(timeout)
-            self.BFI_logger.classLog('Setting timeout:,' + str(timeout), 'INFO')
+            self.BFI_logger.classLog('Setting TIMEOUT:,' + str(timeout), 'INFO')
 
         try:
             bundle, fromAddress = self.sock.recvfrom(1024)

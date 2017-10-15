@@ -4,11 +4,12 @@ from SDTNLogger import SDTNLogger
 
 class Bundle:
 
-    def __init__(self, data):
+    def __init__(self, data, experiments):
 
-        self.Bundle_logger = SDTNLogger(self.__class__.__name__, ['Y1','Y2'], 'INFO')
+        self.Bundle_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.Bundle_logger.classLog("Initializing Bundle...", 'INFO')
 
+        
         
         # Check if this can be directly touched by outside code
         if type(data) is str:
@@ -35,19 +36,19 @@ class Bundle:
         return [self.type, self.sid, self.payload]
 
     def getType(self):
-        self.Bundle_logger.classLog('Getting bundle TYPE: '+ str(self.type), 'INFO')
+        self.Bundle_logger.classLog('Getting bundle TYPE:,'+ str(self.type), 'INFO')
         return self.type
 
     def getSID(self):
-        self.Bundle_logger.classLog('Getting bundle SID: '+ str(self.sid), 'INFO')
+        self.Bundle_logger.classLog('Getting bundle SID:,'+ str(self.sid), 'INFO')
         return self.sid
 
     def getSeq(self):
-        self.Bundle_logger.classLog('Getting SEQ: '+ str(self.seq), 'INFO')
+        self.Bundle_logger.classLog('Getting SEQ:,'+ str(self.seq), 'INFO')
         return self.seq
 
     def getPayload(self):
-        self.Bundle_logger.classLog('Getting bundle PAYLOAD: '+ str(self.payload), 'INFO')
+        self.Bundle_logger.classLog('Getting bundle PAYLOAD:,'+ str(self.payload), 'INFO')
         # self.Bundle_logger.info('Getting bundle payload: %s', self.payload)
         return self.payload
 
