@@ -27,7 +27,7 @@ class SDTNLogger:
         # No explicit switch cases
 
         formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
-        currDateTime=datetime.now() 
+        currDate=datetime.now()
         currDateTime=currDate.strftime('%Y-%m-%d %H:%M:%S')
 
         self.degreeLevel = degreeLevel
@@ -50,6 +50,14 @@ class SDTNLogger:
             expt_handler = logging.FileHandler(expt_filename)        
             expt_handler.setFormatter(formatter)
             self.className_logger.addHandler(expt_handler)
+
+        dropDataTable_filename = './logs/Table_logs/'+currDate+'_'+'dropDataTable_.csv'
+        dropDataTable_handler = logging.FileHandler(dropDataTable_filename)        
+        dropDataTable_handler.setFormatter(formatter)
+
+        dropDataTable_logger = logging.getLogger(dropDataTable_filename)
+        dropDataTable_logger.setLevel(logging.INFO)
+        dropDataTable_logger.addHandler(dropDataTable_handler)
 
         # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         # =====================

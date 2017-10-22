@@ -1,0 +1,46 @@
+# Ito yung sa tingin kong parameterizable variables na pweds ilagay sa config file hahah
+
+class Bundle:
+
+    data?
+
+class BFI:
+
+    fcn : receiveBundle
+        timeout
+
+class ConnectionManager:
+    fcn : init
+        maxAckTimeout
+        ifname
+        helloPort
+        dataPort
+
+class DataFactory:
+    fcn : init
+        dataSize
+        timeToGenerate
+        sid
+        dataManager
+
+class DataManager:
+    fcn : init
+        maxEntries
+        droppingProtocol
+        dbInterface
+
+class DatabaseInterface:
+    fcn : init
+        table
+        database
+        user
+        password
+
+class SDTNLogger:
+    fcn : init
+        className
+        experiments
+        degreeLevel
+
+        class_filename = path to the class file log
+        experiment_filename = path to the experiment file log
