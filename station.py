@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import threading
+import yaml
 from DataFactory import DataFactory
 from DatabaseInterface import DatabaseInterface
 from ConnectionManager import ConnectionManager
@@ -10,22 +11,24 @@ from DataManager import DataManager
 from Bundle import Bundle
 
 class Station:
-
     def __init__(self):
-        self.SID = 1
-        self.DATA_PORT = 10000
-        self.HELLO_PORT = 5000
+        with open("station_config.yaml", 'r') as ymlfile:
+            cfg = yaml.load(ymlfile)
 
-        self.TABLE_NAME = 'sensor_data'
-        self.DATABASE_NAME = 'sdtn'
-        self.MYSQL_USER = 'sdtn'
-        self.MYSQL_PASSWORD = 'thesisit'
-        self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
+        self.SID = cfg['SENSOR_ID']
+        self.DATA_PORT = cfg['DATA_PORT']
+        self.HELLO_PORT = cfg['HELLO_PORT']
 
-        self.conman = ConnectionManager(5, 'wlan0', 5000, 10000)
+        self.TABLE_NAME = cfg['MYSQL']['TABLE_NAME']
+        self.DATABASE_NAME = cfg['MYSQL']['DATABASE_NAME']
+        self.MYSQL_USER = cfg['MYSQL']['USER']
+        self.MYSQL_PASSWORD = cfg['MYSQL']['PASSWORD']
+        self.DATABASE_COLUMNS = cfg['MYSQL']['COLUMNS']
+
+        self.conman = ConnectionManager(cfg['MAX_ACK_TIMEOUT'], cfg['WIRELESS_INTERFACE'], self.HELLO_PORT, self.DATA_PORT)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
-        self.dataMan = DataManager(1000, DataManager.DROP_FIRST_PROTOCOL, self.dbi, 5)
-        self.dataFactory = DataFactory(1, 1, self.SID, self.dataMan)
+        self.dataMan = DataManager(cfg['MAX_DATA_ENTRIES'], cfg['DROPPING_PROTOCOL'], self.dbi, cfg['DATA_TO_BUNDLE_SIZE'])
+        self.dataFactory = DataFactory(cfg['DATA_GENERATED_SIZE'], cfg['TIME_TO_GENERATE_DATA'], self.SID, self.dataMan)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = None
 

@@ -1,9 +1,7 @@
-import socket
-import time
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(('', 5000))
+import yaml
 
-while True:
-    bundle, fromSocket = sock.recvfrom(1024)
-    print bundle
-    time.sleep(3)
+
+with open("station_config.yaml", 'r') as ymlfile:
+    cfg = yaml.load(ymlfile)
+
+print cfg
