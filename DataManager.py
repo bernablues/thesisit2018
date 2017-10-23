@@ -18,7 +18,7 @@ class DataManager:
         self.DataMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.DataMan_logger.classLog('Initializing DataMan...', 'INFO')
         
-        self.dropDataTable_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
+        self.dropDataTable_logger = SDTNLogger('dropDataTable', experiments, 'INFO')
         self.dropDataTable_logger.classLog('Initializing DataMan...', 'INFO')
 
         self.maxEntries = maxEntries

@@ -6,7 +6,7 @@ class BundleFlowInterface:
         self.BFI_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.BFI_logger.classLog('Initializing BFI...', 'INFO')
 
-        self.sendDataTable_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+        self.sendDataTable_logger = SDTNLogger('sendDataTable', experiments, 'INFO')    
         self.sendDataTable_logger.classLog('Initializing BFI...', 'INFO')
 
 
