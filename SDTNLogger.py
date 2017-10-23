@@ -35,7 +35,7 @@ class SDTNLogger:
         self.className = className
         self.className_logger = self.className+'_logger'
 
-        class_filename = './logs/Class_logs/'+currDate+'_'+self.className+'.csv'
+        class_filename = './logs/Class_logs/'+str(currDate)+'_'+self.className+'.csv'
         self.class_handler = logging.FileHandler(class_filename)
         self.class_handler.setFormatter(self.formatter)
 
@@ -43,15 +43,16 @@ class SDTNLogger:
         self.className_logger.setLevel(logging.INFO)
         self.className_logger.addHandler(self.class_handler)
 
-        for experiment in experiments:
-            self.experiment = experiment
-            self.experiment_logger = self.experiment+'_logger'
-            expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
-            expt_handler = logging.FileHandler(expt_filename)        
-            expt_handler.setFormatter(self.formatter)
-            self.className_logger.addHandler(expt_handler)
+        if experiments:
+            for experiment in experiments:
+                self.experiment = experiment
+                self.experiment_logger = self.experiment+'_logger'
+                expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
+                expt_handler = logging.FileHandler(expt_filename)        
+                expt_handler.setFormatter(self.formatter)
+                self.className_logger.addHandler(expt_handler)
 
-        dropDataTable_filename = './logs/Table_logs/'+currDate+'_'+'dropDataTable_.csv'
+        dropDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'dropDataTable_.csv'
         dropDataTable_handler = logging.FileHandler(dropDataTable_filename)        
         dropDataTable_handler.setFormatter(self.formatter)
 
@@ -59,7 +60,7 @@ class SDTNLogger:
         dropDataTable_logger.setLevel(logging.INFO)
         dropDataTable_logger.addHandler(dropDataTable_handler)
 
-        sendDataTable_filename = './logs/Table_logs/'+currDate+'_'+'sendDataTable_.csv'
+        sendDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'sendDataTable_.csv'
         sendDataTable_handler = logging.FileHandler(sendDataTable_filename)        
         sendDataTable_handler.setFormatter(self.formatter)
 

@@ -37,7 +37,7 @@ class DataFactory:
         timestamp = str(datetime.datetime.now())
         entry = [timestamp, '0', data]
         self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
-        self.DF_logger.classLog('Entry is:,' + entry, 'DEBUG')
+        self.DF_logger.classLog('Entry is:,' + str(entry), 'DEBUG')
 
         return entry
 
