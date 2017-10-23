@@ -2,7 +2,7 @@ import logging
 from SDTNLogger import SDTNLogger
 
 class Bundle:
-    def __init__(self, data):
+    def __init__(self, data, experiments=None):
         self.Bundle_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.Bundle_logger.classLog("Initializing Bundle...", 'INFO')
 

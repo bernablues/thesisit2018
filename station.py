@@ -8,10 +8,15 @@ from ConnectionManager import ConnectionManager
 from BundleFlowInterface import BundleFlowInterface
 from DataManager import DataManager   
 from Bundle import Bundle
+import logging
+from SDTNLogger import SDTNLogger
 
 class Station:
 
-    def __init__(self):
+    def __init__(self, experiments=None):
+        self.station_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+        self.station_logger.classLog('Initializing station...', 'INFO')
+
         self.SID = 1
         self.DATA_PORT = 10000
         self.HELLO_PORT = 5000
@@ -31,7 +36,11 @@ class Station:
 
         self.currentSeq = 1
 
+        self.station_logger.classLog('Station Mule initialized:,SID:,' + str(self.SID) + ',DATA_PORT:,' + str(self.DATA_PORT) + ',HELLO_PORT:,' + str(self.HELLO_PORT), 'INFO')
+
+
     def sendNext(self):
+
         data = self.dataMan.getData(True)
         dataBundle = self.appendHeaders(1, data)
         bundle = Bundle(dataBundle)
@@ -45,6 +54,7 @@ class Station:
         return bundleData
 
     def redirect(self, bundle):
+        self.station_logger.classLog('Redirecting bundle...', 'INFO')
         if bundle.getType() == 0:
             if self.currentSeq == bundle.getSeq():
                 self.sendNext()
@@ -55,6 +65,7 @@ class Station:
             pass
 
     def checkConnection(self):
+        self.station_logger.classLog('Checking connection...', 'INFO')
         if not self.conman.isConnected():
             self.conman.listenForHello()
             self.bfi = BundleFlowInterface(self.dataSocket, self.conman.getConnectedTo())
@@ -64,9 +75,11 @@ class Station:
             return True
 
     def resendBundle(self, bundle):
+        self.station_logger.classLog('Resending bundle...', 'INFO')
         self.bfi.sendBundle(bundle)
 
     def expectAck(self, bundle):
+        self.station_logger.classLog('Expecting ACK...', 'INFO')
         terminated = False
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
@@ -84,17 +97,20 @@ class Station:
                     continue
     
     def sendReceiveBundle(self):
+        self.station_logger.classLog('Sending Receive Bundle...', 'INFO')
         bundleData = '3 ' + ' 0 ' + ' x ' + ' x' #does not work when two headers only
         bundle = Bundle(bundleData)
         self.bfi.sendBundle(bundle)
         return bundle
 
     def acknowledge(self, bundle):
+        self.station_logger.classLog('Acknowledging bundle...', 'INFO')
         bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x' #does not work when two headers only
         ack = Bundle(bundleData)
         self.bfi.sendBundle(ack)
 
     def start(self):
+        self.station_logger.classLog('Starting station miodule...', 'INFO')
         while True:
             self.checkConnection()
             time.sleep(2)
@@ -112,6 +128,8 @@ class Station:
 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
+                self.station_logger.classLog('Not reachable...', 'WARNING')
+
 
 def main():
     station = Station()
