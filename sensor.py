@@ -9,13 +9,20 @@ from ConnectionManager import ConnectionManager
 from BundleFlowInterface import BundleFlowInterface
 from DataManager import DataManager   
 from Bundle import Bundle
+import logging
+from SDTNLogger import SDTNLogger
 
 class Sensor:
 
-    def __init__(self):
+    def __init__(self,experiments=None):
         with open("sensor_config.yaml", 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
+        self.sensor_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
+        self.sensor_logger.classLog('Initializing sensor...', 'INFO')
 
+        self.sendDataTable_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+        self.sendDataTable_logger.classLog('Initializing sensor...', 'INFO')
+        
         self.SID = cfg['SENSOR_ID']
         self.DATA_PORT = cfg['DATA_PORT']
         self.HELLO_PORT = cfg['HELLO_PORT']
@@ -35,20 +42,26 @@ class Sensor:
 
         self.currentSeq = 1
 
+        self.sensor_logger.classLog('Sensor initialized:,SID:,' + str(self.SID) + ',DATA_PORT:,' + str(self.DATA_PORT) + ',HELLO_PORT:,' + str(self.HELLO_PORT), 'INFO')
+
     def sendNext(self):
+        self.sensor_logger.classLog('Sending next bundle...', 'INFO')
+        self.sendDataTable_logger.classLog('Sending next bundle...', 'INFO')
+
         data = self.dataMan.getData(True)
         dataBundle = self.appendHeaders(1, data)
         bundle = Bundle(dataBundle)
         self.bfi.sendBundle(bundle)
         return bundle
-        
 
     def appendHeaders(self, bundleType, data):
+        self.sensor_logger.classLog('Appending headers...', 'INFO')
         headers = (bundleType, self.currentSeq, self.SID)
         bundleData = (headers, data)
         return bundleData
 
     def redirect(self, bundle):
+        self.sensor_logger.classLog('Redirecting bundles...', 'INFO')
         if bundle.getType() == 0:
             if self.currentSeq == bundle.getSeq():
                 self.sendNext()
@@ -59,6 +72,7 @@ class Sensor:
             pass
 
     def checkConnection(self):
+        self.sensor_logger.classLog('Checking connection...', 'INFO')
         if not self.conman.isConnected():
             self.conman.listenForHello()
             self.bfi = BundleFlowInterface(self.dataSocket, self.conman.getConnectedTo())
@@ -66,9 +80,15 @@ class Sensor:
             return True
 
     def resendBundle(self, bundle):
+        self.sensor_logger.classLog('Resending bundle...', 'INFO')
+        self.sendDataTable_logger.classLog('Resending bundle...', 'INFO')
+
         self.bfi.sendBundle(bundle)
 
     def expectAck(self, bundle):
+        self.sensor_logger.classLog('Expecting ACK...', 'INFO')
+        self.sendDataTable_logger.classLog('Expecting ACK...', 'INFO')
+
         terminated = False
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
@@ -86,6 +106,7 @@ class Sensor:
                     continue
 
     def start(self):
+        self.sensor_logger.classLog('Sensor module starting...', 'INFO')
         # packetsPassed = 0
         # start = time.time()
         while True:
@@ -98,6 +119,7 @@ class Sensor:
 
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print "Not reachable"
+            self.sensor_logger.classLog('Not reachable...', 'WARNING')
 
         # end = time.time()
         # timeElapsed = end-start
