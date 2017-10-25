@@ -5,21 +5,13 @@ import threading
 import time
 import logging
 from BundleFlowInterface import BundleFlowInterface
-<<<<<<< HEAD
 from SDTNLogger import SDTNLogger
 
-class ConnectionManager:
-
-    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments):
-
-        # self.ConMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
-=======
 import logging
 from SDTNLogger import SDTNLogger
 
 class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments=None):
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.ConMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.ConMan_logger.classLog('Initializing ConMan...', 'INFO')
 
@@ -43,10 +35,7 @@ class ConnectionManager:
 
     def __getOwnIpAddress(self, ifname):
         self.ConMan_logger.classLog('Getting own IP addr...', 'INFO')
-<<<<<<< HEAD
-=======
 
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         return socket.inet_ntoa(fcntl.ioctl(
             s.fileno(),
@@ -122,13 +111,8 @@ class ConnectionManager:
         self.__initializeConnection(fromAddress)
 
     def __sendHello(self, sock):
-<<<<<<< HEAD
-
-        self.ConMan_logger.classLog('Sending hello message...', 'INFO')
-=======
         self.ConMan_logger.classLog('Sending hello message...', 'INFO')
 
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         helloMessage = "2"
 
         while True:
@@ -136,8 +120,6 @@ class ConnectionManager:
             # Make this parametizable
             sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
             self.ConMan_logger.classLog('Sent hello message to 172.24.1.255', 'INFO')
-<<<<<<< HEAD
-=======
 
     def __emptyHelloSocket(self):
         # problematic
@@ -148,7 +130,6 @@ class ConnectionManager:
             except:
                 break
         self.helloSocket.settimeout(None)
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
     def __initializeHelloThread(self):
         self.ConMan_logger.classLog('Initializing hello thread...', 'INFO')
@@ -161,7 +142,6 @@ class ConnectionManager:
         self.ConMan_logger.classLog('Hello thread initialized:,Hello socket:,' + str(helloSocket), 'INFO')
         print "Initialized hello thread."
         return thread
-
 
     def startHelloThread(self):
         self.ConMan_logger.classLog('Starting hello thread...', 'INFO')
@@ -181,9 +161,6 @@ class ConnectionManager:
             self.__terminateConnection()
             return True
         else:
-<<<<<<< HEAD
-            return False
-=======
             return False
 
     def initializeConnection(self, bundle, address):
@@ -192,4 +169,3 @@ class ConnectionManager:
             return True
         else:
             return False
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b

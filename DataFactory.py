@@ -6,24 +6,13 @@
 # number of seconds to send data
 
 import time
-<<<<<<< HEAD
-=======
 import datetime
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 import logging
 from SDTNLogger import SDTNLogger
 
 class DataFactory:
-<<<<<<< HEAD
-    
-    def __init__(self, dataSize, timeToGenerate, sid, dataManager, experiments):
-        # self.DF_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
-        self.DF_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
-
-=======
     def __init__(self, dataSize, timeToGenerate, sid, dataManager, experiments=None):
         self.DF_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.DF_logger.classLog('Initializing DF...', 'INFO')
 
         self.dataManager = dataManager
@@ -31,13 +20,6 @@ class DataFactory:
         self.timeToGenerate = timeToGenerate
         self.sid = sid
 
-<<<<<<< HEAD
-        # self.msg = 'DF initialized: data_size (in bytes):"+ %s+ "time_to_generate: "+%s "sid: "+ %r "data_mgr: "+ %r', self.dataSize, self.timeToGenerate, %self.sid, %self.dataManager
-        # self.msg = ('DF initialized: data_size (in bytes): %(self.dataSize)s time_to_generate: %(self.timeToGenerate)s sid: %(self.sid)s data_mgr: %(self.dataManager)s')
-        # self.msg = ('DF initialized: data_size (in bytes): '+ str(self.dataSize) +' time_to_generate: '+ str(self.timeToGenerate) +' sid: '+ str(self.sid) +' data_mgr: '+ str(self.dataManager))
-        
-=======
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.DF_logger.classLog('DF initialized:,DATA_SIZE (in bytes):,' + str(self.dataSize) + ',TIME_TO_GENERATE:,' + str(self.timeToGenerate) + ',SID:,' + str(self.sid) + ',DATA_MGR:,' + str(self.dataManager), 'INFO')
 
     def printProperties(self):
@@ -52,20 +34,12 @@ class DataFactory:
 
     def generateEntry(self):
         self.DF_logger.classLog('Generating ENTRY:', 'INFO')
-<<<<<<< HEAD
-        payload = 'x' * self.dataSize
-        entry = [str(self.sid), payload]
-        self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
-        self.DF_logger.classLog('Entry is:,' + entry, 'DEBUG')
-        
-=======
         data = 'x' * self.dataSize
         timestamp = str(datetime.datetime.now())
         entry = [timestamp, '0', data]
         self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
         self.DF_logger.classLog('Entry is:,' + str(entry), 'DEBUG')
 
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         return entry
 
     def pushEntry(self, entry):

@@ -15,17 +15,9 @@ from SDTNLogger import SDTNLogger
 
 class Mule:
 
-<<<<<<< HEAD
-    def __init__(self):
-
-        self.SID = 1
-        self.DATA_PORT = 10000
-        self.HELLO_PORT = 5000
-=======
     def __init__(self, experiments=None):
         with open("mule_config.yaml", 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
->>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
         self.mule_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
         self.mule_logger.classLog('Initializing mule...', 'INFO')
