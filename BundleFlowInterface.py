@@ -41,7 +41,7 @@ class BundleFlowInterface:
         try:
             bundle, fromSocket = self.sock.recvfrom(1024)
             print bundle
-            self.BFI_logger.classLog('BUNDLE:,' + bundle.toString() + ',RECEIVED_FROM:,' + str(fromSocket), 'INFO')
+            self.BFI_logger.classLog('BUNDLE:,' + str(bundle) + ',RECEIVED_FROM:,' + str(fromSocket), 'INFO')
         except KeyboardInterrupt:
             print "Keyboard interrupted. Failed to receive bundle. Terminating from BundleFlowInterface."
             self.BFI_logger.classLog('No bundle received.', 'WARNING')

@@ -90,14 +90,14 @@ class Station:
         terminated = False
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
-            fromAddress = bundleData[1]
-            bundleData = bundleData[0]
 
             if not bundleData:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:
-                if bundleData.split()[0] == '0':
+                fromAddress = bundleData[1]
+                bundleData = bundleData[0]
+                if bundleData.split()[0] == '0' and int(bundleData.split()[1]) == self.currentSeq:
                     self.currentSeq += 1
                     return bundle
                 else:
@@ -105,7 +105,7 @@ class Station:
     
     def sendReceiveBundle(self):
         self.station_logger.classLog('Sending Receive Bundle...', 'INFO')
-        bundleData = '3 ' + ' 0 ' + ' x ' + ' x' #does not work when two headers only
+        bundleData = '3 ' + str(self.currentSeq) + ' x ' + ' x' #does not work when two headers only
         bundle = Bundle(bundleData)
         self.bfi.sendBundle(bundle)
         return bundle

@@ -80,7 +80,7 @@ class Mule:
             else:
                 fromAddress = bundleData[1]
                 bundleData = bundleData[0]
-                if bundleData.split()[0] == '0':
+                if bundleData.split()[0] == '0' and int(bundleData.split()[1]) == self.currentSeq:
                     self.currentSeq += 1
                     return bundle
                 else:
@@ -108,8 +108,8 @@ class Mule:
                     #create two states for connection if got bundleType = 3 and to passively data if got bundleType = 1
                     self.conman.initializeConnection(bundle, fromAddress)
                     while self.checkConnection():
-                        self.sendNext()
-                        self.expectAck(bundle)
+                        nextBundle = self.sendNext()
+                        self.expectAck(nextBundle)
                 elif bundle.getType() == '1':
                     data = self.dataMan.sliceData(bundle.toData()[1])
                     for each in data:

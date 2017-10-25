@@ -27,7 +27,7 @@ class SDTNLogger:
         # No explicit switch cases
 
         self.formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
-        currDate=datetime.now() - timedelta(days=3)
+        currDate=datetime.now()
         currDateTime=currDate.strftime('%Y-%m-%d %H:%M:%S')
 
         self.degreeLevel = degreeLevel
