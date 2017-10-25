@@ -121,21 +121,25 @@ class Station:
         while True:
             self.checkConnection()
             time.sleep(2)
-            try:
-                bundleData, fromSocket = self.bfi.receiveBundle()
-                fromAddress, fromPort = fromSocket
-                self.bfi.setToAddress(fromAddress)
-                bundle = Bundle(bundleData)
 
-                data = self.dataMan.sliceData(bundle.toData()[1])
-                for each in data:
-                    self.dataMan.insertData(each)
-                self.acknowledge(bundle)
+            bundleData, fromSocket = self.bfi.receiveBundle(5)
+            if not bundleData:
+                self.conman.terminateConnection()
+                continue
+
+            fromAddress, fromPort = fromSocket
+            self.bfi.setToAddress(fromAddress)
+            bundle = Bundle(bundleData)
+
+            data = self.dataMan.sliceData(bundle.toData()[1])
+            for each in data:
+                self.dataMan.insertData(each)
+            self.acknowledge(bundle)
 
 
-            except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
-                print "Not reachable"
-                self.station_logger.classLog('Not reachable...', 'WARNING')
+            # except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
+            #     print "Not reachable"
+            #     self.station_logger.classLog('Not reachable...', 'WARNING')
 
 
 def main():

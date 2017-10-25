@@ -49,7 +49,8 @@ class BundleFlowInterface:
             exit()
         except:
             self.sock.settimeout(None)
-            return None
+            print "Receive Timeout"
+            return None, None
 
         if timeout:    
             self.sock.settimeout(None)

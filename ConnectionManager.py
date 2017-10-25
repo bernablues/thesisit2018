@@ -162,8 +162,9 @@ class ConnectionManager:
             return False
 
     def initializeConnection(self, bundle, address):
-        if bundle.getType() == '3':
-            self.__initializeConnection(address)
-            return True
-        else:
-            return False
+        self.__initializeConnection(address)
+        return True
+
+    def terminateConnection(self):
+        self.__terminateConnection()
+        return True
