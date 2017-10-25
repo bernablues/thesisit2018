@@ -1,6 +1,7 @@
 import MySQLdb
 import logging
 from SDTNLogger import SDTNLogger
+<<<<<<< HEAD
 
 # For refactoring, pwedeng mag assign ng errors to lessen storageof logs, instead of strings, just use number/letters
 
@@ -10,12 +11,21 @@ class DatabaseInterface:
         # self.DBI_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
         self.DBI_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
 
+=======
+
+class DatabaseInterface:
+    def __init__(self, table, database, user, password, columns, experiments=None):
+        self.DBI_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.DBI_logger.classLog('Initializing DBI...', 'INFO')
 
         self.table = table
         self.database = database
         self.user = user
         self.password = password
+        self.columns = columns
+
+        self.DBI_logger.classLog('DBI initialized:,DB_NAME:,' + str(self.database) + ',TABLE_NAME:,' + str(self.table) + ',USER:,' + str(self.user), 'INFO') 
 
         # self.DBI_logger.info('DBI initialized: db_name: %s table_name: %s user: %s', database, table, user)
         self.DBI_logger.classLog('DBI initialized:,DB_NAME:,' + str(self.database) + ',TABLE_NAME:,' + str(self.table) + ',USER:,' + str(self.user), 'INFO') 
@@ -25,10 +35,14 @@ class DatabaseInterface:
         self.DBI_logger.classLog('Opening db:,' + str(self.database) + ',localhost:,' + str(self.user), 'INFO')        
         return db
 
+    def __dataToSqlString(self, data):
+        return "'" + "', '".join(data) + "'"
+
     def insertRow(self, data):
         db = self.__openDatabase()
         cursor = db.cursor()
         # To be improved, assumes column names. Could use dictionaries for key->value pairs.
+<<<<<<< HEAD
         sql = "INSERT INTO " + self.table + " (sid, payload) VALUES (" + data[0] + ", '" + data[1] + "' )"
 
         try:
@@ -36,6 +50,14 @@ class DatabaseInterface:
             cursor.execute(sql)                                                                                                                                             
             self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
 
+=======
+        sql = "INSERT INTO " + self.table + " (" + ', '.join(self.columns) + ") VALUES (" + self.__dataToSqlString(data) + ")"
+        try:
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
+            cursor.execute(sql)
+            self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
+            
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
             self.DBI_logger.classLog('Committing to db...', 'INFO')
             db.commit()
             self.DBI_logger.classLog('Successfully committed to db.', 'INFO')
@@ -58,16 +80,28 @@ class DatabaseInterface:
             self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
             self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
+<<<<<<< HEAD
 
             results = cursor.fetchone()
 
             self.DBI_logger.classLog('Row count:,' + str(results), 'INFO')
 
 
+=======
+            
+            results = cursor.fetchone()
+            self.DBI_logger.classLog('Row count:,' + str(results), 'INFO')
+
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         except:
+            self.DBI_logger.classLog('DB Error:,getting row count', 'WARNING')
             print "DB Error"
+<<<<<<< HEAD
             self.DBI_logger.classLog('DB Error:,getting row count', 'WARNING')
             
+=======
+
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.DBI_logger.classLog('Closing db.','INFO')
         db.close()
 
@@ -77,12 +111,17 @@ class DatabaseInterface:
         db = self.__openDatabase()
         cursor = db.cursor()
 
+<<<<<<< HEAD
         self.DBI_logger.classLog('Getting rows from db...', 'INFO')
         sql = "SELECT sid, payload FROM " + self.table
+=======
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
 
+        self.DBI_logger.classLog('Getting rows from db...', 'INFO')
         sql = sql + " LIMIT " + str(numberOfRows)
 
         try:
@@ -91,8 +130,12 @@ class DatabaseInterface:
             self.DBI_logger.classLog('Successfully executed SQL command:,'+ sql, 'INFO')
 
             results = cursor.fetchall()
+<<<<<<< HEAD
             self.DBI_logger.classLog('Rows:,' + str(results), 'INFO' )
 
+=======
+            self.DBI_logger.classLog('Rows:,' + str(results), 'INFO')
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         except:
             print "DB Error"
             self.DBI_logger.classLog('DB Error:,getting rowst', 'WARNING')
@@ -107,7 +150,11 @@ class DatabaseInterface:
         cursor = db.cursor()
 
         self.DBI_logger.classLog('Getting nth (' + n + ') row from db...', 'INFO')
+<<<<<<< HEAD
         sql = "SELECT sid, payload FROM " + self.table
+=======
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         sql = "SELECT * FROM " + self.table + " ORDER BY id LIMIT n-1,1"
 
         try:
@@ -117,7 +164,10 @@ class DatabaseInterface:
 
             results = cursor.fetchall()
             self.DBI_logger.classLog('Rows:,' + str(results), 'INFO' )
+<<<<<<< HEAD
 
+=======
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         except:
             print "DB Error"
             self.DBI_logger.classLog('DB Error:,getting nth row', 'WARNING')
@@ -132,8 +182,13 @@ class DatabaseInterface:
         cursor = db.cursor()
 
         self.DBI_logger.classLog('Getting all rows from db...', 'INFO')
+<<<<<<< HEAD
         sql = "SELECT sid, payload FROM " + self.table
 
+=======
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table
+        
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         if isReversed:
             sql = sql + ' ORDER BY id DESC'
 
@@ -143,7 +198,11 @@ class DatabaseInterface:
             self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
 
             results = cursor.fetchall()
+<<<<<<< HEAD
             self.DBI_logger.classLog('Rows:,' + str(results), 'INFO')
+=======
+            self.DBI_logger.classLog('Rows:,' + str(results), 'DEBUG')
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         except:
             print "DB Error"
             self.DBI_logger.classLog('Getting all rows from db...', 'WARNING')
@@ -173,12 +232,19 @@ class DatabaseInterface:
             self.DBI_logger.classLog('Committing to db.', 'INFO')
             db.commit()
             self.DBI_logger.classLog('Successfully committed to db.', 'INFO')
+<<<<<<< HEAD
 
+=======
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         except:
             self.DBI_logger.classLog('DB rollback', 'WARNING')
             db.rollback()
             self.DBI_logger.classLog('Deleting n (' + str(numberOfRows) + ') rows from db.', 'WARNING')
             print "DB Error"
+<<<<<<< HEAD
 
         self.DBI_logger.classLog('Closing db.', 'INFO')
+=======
+        self.DBI_logger.classLog('Closing db.', 'INFO')        
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         db.close()

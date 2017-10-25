@@ -5,6 +5,7 @@ import threading
 import time
 import logging
 from BundleFlowInterface import BundleFlowInterface
+<<<<<<< HEAD
 from SDTNLogger import SDTNLogger
 
 class ConnectionManager:
@@ -12,6 +13,13 @@ class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments):
 
         # self.ConMan_logger = SDTNLogger(self.__class__.__name__, ['W1','W2'], 'INFO')
+=======
+import logging
+from SDTNLogger import SDTNLogger
+
+class ConnectionManager:
+    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments=None):
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         self.ConMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.ConMan_logger.classLog('Initializing ConMan...', 'INFO')
 
@@ -35,6 +43,10 @@ class ConnectionManager:
 
     def __getOwnIpAddress(self, ifname):
         self.ConMan_logger.classLog('Getting own IP addr...', 'INFO')
+<<<<<<< HEAD
+=======
+
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         return socket.inet_ntoa(fcntl.ioctl(
             s.fileno(),
@@ -83,8 +95,10 @@ class ConnectionManager:
         self.ConMan_logger.classLog('Terminating connection...', 'INFO')
         self.connected = False
         self.connectedTo = False
-        self.__resetHelloSocket()
-        self.__resetHelloBundleFlowInterface()
+        self.__emptyHelloSocket()
+        # THIS WILL BE A PROBLEM WHEN THERE ARE MULTIPLE HELLO BROADCAST IN RANGE
+        # self.__resetHelloSocket()
+        # self.__resetHelloBundleFlowInterface()
 
     def getDataSocket(self):
         return self.dataSocket
@@ -108,8 +122,13 @@ class ConnectionManager:
         self.__initializeConnection(fromAddress)
 
     def __sendHello(self, sock):
+<<<<<<< HEAD
 
         self.ConMan_logger.classLog('Sending hello message...', 'INFO')
+=======
+        self.ConMan_logger.classLog('Sending hello message...', 'INFO')
+
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         helloMessage = "2"
 
         while True:
@@ -117,6 +136,19 @@ class ConnectionManager:
             # Make this parametizable
             sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
             self.ConMan_logger.classLog('Sent hello message to 172.24.1.255', 'INFO')
+<<<<<<< HEAD
+=======
+
+    def __emptyHelloSocket(self):
+        # problematic
+        self.helloSocket.settimeout(0.001)
+        while True:
+            try:
+                self.helloSocket.recvfrom(4)
+            except:
+                break
+        self.helloSocket.settimeout(None)
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
     def __initializeHelloThread(self):
         self.ConMan_logger.classLog('Initializing hello thread...', 'INFO')
@@ -149,4 +181,15 @@ class ConnectionManager:
             self.__terminateConnection()
             return True
         else:
+<<<<<<< HEAD
             return False
+=======
+            return False
+
+    def initializeConnection(self, bundle, address):
+        if bundle.getType() == '3':
+            self.__initializeConnection(address)
+            return True
+        else:
+            return False
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b

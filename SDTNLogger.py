@@ -1,5 +1,9 @@
 import logging
+<<<<<<< HEAD
 from datetime import datetime
+=======
+from datetime import datetime, timedelta
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
 class SDTNLogger:
 
@@ -26,8 +30,13 @@ class SDTNLogger:
         # Outputs to multiple files simultaneously
         # No explicit switch cases
 
+<<<<<<< HEAD
         formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
         currDateTime=datetime.now() 
+=======
+        self.formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
+        currDate=datetime.now() - timedelta(days=3)
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         currDateTime=currDate.strftime('%Y-%m-%d %H:%M:%S')
 
         self.degreeLevel = degreeLevel
@@ -35,6 +44,7 @@ class SDTNLogger:
         self.className = className
         self.className_logger = self.className+'_logger'
 
+<<<<<<< HEAD
         class_filename = './logs/Class_logs/'+currDate+'_'+self.className+'.csv'
         class_handler = logging.FileHandler(class_filename)        
         class_handler.setFormatter(formatter)
@@ -50,6 +60,43 @@ class SDTNLogger:
             expt_handler = logging.FileHandler(expt_filename)        
             expt_handler.setFormatter(formatter)
             self.className_logger.addHandler(expt_handler)
+=======
+        class_filename = './logs/Class_logs/'+str(currDate)+'_'+self.className+'.csv'
+        self.class_handler = logging.FileHandler(class_filename)
+        self.class_handler.setFormatter(self.formatter)
+
+        self.className_logger = logging.getLogger(self.className)
+        self.className_logger.setLevel(logging.INFO)
+        self.className_logger.addHandler(self.class_handler)
+
+        if experiments:
+            for experiment in experiments:
+                self.experiment = experiment
+                self.experiment_logger = self.experiment+'_logger'
+                expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
+                expt_handler = logging.FileHandler(expt_filename)        
+                expt_handler.setFormatter(self.formatter)
+                self.className_logger.addHandler(expt_handler)
+
+        dropDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'dropDataTable_.csv'
+        dropDataTable_handler = logging.FileHandler(dropDataTable_filename)        
+        dropDataTable_handler.setFormatter(self.formatter)
+
+        dropDataTable_logger = logging.getLogger(dropDataTable_filename)
+        dropDataTable_logger.setLevel(logging.INFO)
+        dropDataTable_logger.addHandler(dropDataTable_handler)
+
+        sendDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'sendDataTable_.csv'
+        sendDataTable_handler = logging.FileHandler(sendDataTable_filename)        
+        sendDataTable_handler.setFormatter(self.formatter)
+
+        sendDataTable_logger = logging.getLogger(sendDataTable_filename)
+        sendDataTable_logger.setLevel(logging.INFO)
+        sendDataTable_logger.addHandler(sendDataTable_handler)
+
+
+
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
 
         # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
         # =====================
@@ -115,8 +162,13 @@ class SDTNLogger:
 
     def printProperties(self):
         print 'className_logger: ', self.className_logger
+<<<<<<< HEAD
         print 'className_handler: ', self.className_handler
         print 'className_formatter: ', self.className_formatter
+=======
+        print 'className_handler: ', self.class_handler
+        print 'className_formatter: ', self.formatter
+>>>>>>> 16a27b48504596ee80bff325278896cf038df95b
         print 'degreeLevel: ', self.degreeLevel
 
     def classLog(self, message, level):
