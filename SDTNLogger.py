@@ -1,3 +1,4 @@
+import os
 import logging
 from datetime import datetime, timedelta
 
@@ -27,31 +28,31 @@ class SDTNLogger:
         # No explicit switch cases
 
         self.formatter = logging.Formatter('%(asctime)s,%(name)s,%(levelname)s,%(message)s')
-        currDate=datetime.now() - timedelta(days=3)
-        currDateTime=currDate.strftime('%Y-%m-%d %H:%M:%S')
+        currDate=datetime.now()
+        currDateHr=currDate.strftime('%Y-%m-%d_%H')
+        currDateDay=currDate.strftime('%Y-%m-%d')
+        # currDateTime=currDate.strftime('%Y-%m-%d_%H:%M:%S')
 
         self.degreeLevel = degreeLevel
 
         self.className = className
         self.className_logger = self.className+'_logger'
 
-        class_filename = './logs/Class_logs/'+currDate+'_'+self.className+'.csv'
-        class_handler = logging.FileHandler(class_filename)        
-        class_handler.setFormatter(formatter)
+        newpath_class_logs = './logs/Class_logs/'+currDateHr+'/'
+        if not os.path.exists(newpath_class_logs):
+            os.makedirs(newpath_class_logs)
 
-        self.className_logger = logging.getLogger(self.className)
-        self.className_logger.setLevel(logging.INFO)
-        self.className_logger.addHandler(class_handler)
+        newpath_expt_logs = './logs/Expt_logs/'+currDateHr+'/'
+        if not os.path.exists(newpath_expt_logs):
+            os.makedirs(newpath_expt_logs)
 
-        for experiment in experiments:
-            self.experiment = experiment
-            self.experiment_logger = self.experiment+'_logger'
-            expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
-            expt_handler = logging.FileHandler(expt_filename)        
-            expt_handler.setFormatter(formatter)
-            self.className_logger.addHandler(expt_handler)
+        newpath_table_logs = './logs/Table_logs/'+currDateHr+'/'
+        if not os.path.exists(newpath_table_logs):
+            os.makedirs(newpath_table_logs)
 
-        class_filename = './logs/Class_logs/'+str(currDate)+'_'+self.className+'.csv'
+
+        class_filename = newpath_class_logs+self.className+'.csv'
+        # class_filename = './logs/Class_logs/'+str(currDate)+'_'+self.className+'.csv'
         self.class_handler = logging.FileHandler(class_filename)
         self.class_handler.setFormatter(self.formatter)
 
@@ -63,12 +64,14 @@ class SDTNLogger:
             for experiment in experiments:
                 self.experiment = experiment
                 self.experiment_logger = self.experiment+'_logger'
-                expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
+                # expt_filename = './logs/Experiment_logs/'+self.experiment+'.csv'
+                expt_filename = newpath_expt_logs+self.experiment+'.csv'
                 expt_handler = logging.FileHandler(expt_filename)        
                 expt_handler.setFormatter(self.formatter)
                 self.className_logger.addHandler(expt_handler)
 
-        dropDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'dropDataTable_.csv'
+        dropDataTable_filename = newpath_table_logs+self.experiment+'.csv'
+        # dropDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'dropDataTable_.csv'
         dropDataTable_handler = logging.FileHandler(dropDataTable_filename)        
         dropDataTable_handler.setFormatter(self.formatter)
 
@@ -76,13 +79,16 @@ class SDTNLogger:
         dropDataTable_logger.setLevel(logging.INFO)
         dropDataTable_logger.addHandler(dropDataTable_handler)
 
-        sendDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'sendDataTable_.csv'
+        sendDateTable_filename = newpath_table_logs+self.experiment+'.csv'        
+        # sendDataTable_filename = './logs/Table_logs/'+str(currDate)+'_'+'sendDataTable_.csv'
         sendDataTable_handler = logging.FileHandler(sendDataTable_filename)        
         sendDataTable_handler.setFormatter(self.formatter)
 
         sendDataTable_logger = logging.getLogger(sendDataTable_filename)
         sendDataTable_logger.setLevel(logging.INFO)
         sendDataTable_logger.addHandler(sendDataTable_handler)
+
+
 
 
         # Bawal magkaiba ng degree level yung classLog and experimentLog if ganitong implementation
