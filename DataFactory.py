@@ -19,7 +19,7 @@ class DataFactory:
         self.timeToGenerate = timeToGenerate
         self.sid = sid
 
-        self.seqNumber = 1
+        self.seqNumber = 0
 
         self.DF_logger.classLog('DF initialized:,DATA_SIZE (in bytes):,' + str(self.dataSize) + ',TIME_TO_GENERATE:,' + str(self.timeToGenerate) + ',SID:,' + str(self.sid) + ',DATA_MGR:,' + str(self.dataManager), 'INFO')
 
@@ -39,6 +39,9 @@ class DataFactory:
         timestamp = str(datetime.datetime.now())
         entry = [timestamp, self.seqNumber, data]
         self.seqNumber += 1
+
+        if self.seqNumber == 1000:
+            self.seqNumber = 0
         
         self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
         self.DF_logger.classLog('Entry is:,' + str(entry), 'DEBUG')
