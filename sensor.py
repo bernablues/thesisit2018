@@ -33,7 +33,7 @@ class Sensor:
         self.MYSQL_PASSWORD = 'thesisit'
         self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
-        self.conman = ConnectionManager(5, 'wlan0', self.HELLO_PORT, self.DATA_PORT)
+        self.conman = ConnectionManager(5, 'wlp2s0', self.HELLO_PORT, self.DATA_PORT)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
         self.dataMan = DataManager(20, 0, self.dbi, 5)
         self.dataFactory = DataFactory(1, 1, self.SID, self.dataMan)
@@ -137,6 +137,8 @@ def main():
     
 def test():
     print "TEST MODE"
+    sensor = Sensor()
+    print "Created Sensor"
 
 if __name__ == "__main__":
     main()

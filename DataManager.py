@@ -44,7 +44,6 @@ class DataManager:
             self.dropData()
             return False
         self.dbInterface.insertRow(data)
-        self.dbInterface.insertRow(data)
         self.DataMan_logger.classLog('Successfully inserted data.', 'INFO')        
         return True        
 
@@ -109,12 +108,23 @@ class DataManager:
             return True
         else:
             return False
+    
+    def padZeroesToDataSeq(self, data):
+        newData = []
+        for datum in data:
+            datum = list(datum)
+            datum[1] = '%03d' % datum[1]
+            datum = tuple(datum)
+            newData.append(datum)
+        newData = tuple(newData)
+        return newData
 
     def getData(self, deleteData = False):
         self.DataMan_logger.classLog('Getting data...', 'INFO')
         while not self.checkBundleSizeLimit():
             continue
         data = self.dbInterface.getRows(self.bundleSize)
+        data = self.padZeroesToDataSeq(data)
         if deleteData:
             self.dbInterface.deleteRows(self.bundleSize)
         self.DataMan_logger.classLog('Get data successful.', 'INFO')
@@ -123,7 +133,7 @@ class DataManager:
     def sliceData(self, data):
         # Fix this when bundle headers are defined
         timestampLength = 18
-        seqNumberLength = 1
+        seqNumberLength = 3
         dataLength = 1
         rowLength = timestampLength + seqNumberLength + dataLength
 
@@ -132,7 +142,7 @@ class DataManager:
         slicedData = []
 
         for each in payload:
-            slicedData.append([each[0:10] + ' ' + each[10:18], each[18:19], each[19:20]])
+            slicedData.append([each[0:10] + ' ' + each[10:18], each[18:21], each[21:22]])
         return slicedData
 
     def getAllData(self):

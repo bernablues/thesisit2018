@@ -37,7 +37,7 @@ class DataFactory:
         self.DF_logger.classLog('Generating ENTRY:', 'INFO')
         data = 'x' * self.dataSize
         timestamp = str(datetime.datetime.now())
-        entry = [timestamp, self.seqNumber, data]
+        entry = [timestamp, str(self.seqNumber), data]
         self.seqNumber += 1
 
         if self.seqNumber == 1000:
@@ -45,7 +45,6 @@ class DataFactory:
         
         self.DF_logger.classLog('Successfully generated ENTRY.', 'INFO')
         self.DF_logger.classLog('Entry is:,' + str(entry), 'DEBUG')
-
         return entry
 
     def pushEntry(self, entry):
