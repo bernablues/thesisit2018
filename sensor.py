@@ -33,10 +33,10 @@ class Sensor:
         self.MYSQL_PASSWORD = 'thesisit'
         self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
-        self.conman = ConnectionManager(5, 'wlp2s0', self.HELLO_PORT, self.DATA_PORT)
+        self.conman = ConnectionManager(5, 'wlan0', self.HELLO_PORT, self.DATA_PORT)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
-        self.dataMan = DataManager(20, 0, self.dbi, 5)
-        self.dataFactory = DataFactory(1, 1, self.SID, self.dataMan)
+        self.dataMan = DataManager(50, 0, self.dbi, 5)
+        self.dataFactory = DataFactory(1, 0.5, self.SID, self.dataMan)
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = None
 
@@ -93,7 +93,7 @@ class Sensor:
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
 
-            if not bundleData:
+            if not bundleData[0]:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:

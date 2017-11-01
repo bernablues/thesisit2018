@@ -5,6 +5,7 @@
 # number of seconds to generate new entry,
 # number of seconds to send data
 import random
+import time
 import logging
 from SDTNLogger import SDTNLogger
 
@@ -120,9 +121,15 @@ class DataManager:
         return newData
 
     def getData(self, deleteData = False):
+        checkDataTimeout = 0
         self.DataMan_logger.classLog('Getting data...', 'INFO')
         while not self.checkBundleSizeLimit():
-            continue
+            time.sleep(2)
+            checkDataTimeout += 1
+            if checkDataTimeout == 5:
+                return None
+            else:
+                continue
         data = self.dbInterface.getRows(self.bundleSize)
         data = self.padZeroesToDataSeq(data)
         if deleteData:

@@ -91,7 +91,7 @@ class Station:
         while not terminated:
             bundleData = self.bfi.receiveBundle(3)
 
-            if not bundleData:
+            if not bundleData[0]:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:

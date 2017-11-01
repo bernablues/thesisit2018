@@ -61,6 +61,9 @@ class Mule:
     def sendNext(self):
         self.mule_logger.classLog('Sending next bundle...', 'INFO')
         data = self.dataMan.getData(True)
+        if not data:
+            self.conman.terminateConnection()
+            return data
         dataBundle = self.appendHeaders(1, data)
         bundle = Bundle(dataBundle)
         print bundle.toString()
@@ -74,7 +77,7 @@ class Mule:
 
             bundleData = self.bfi.receiveBundle(3)
 
-            if not bundleData:
+            if not bundleData[0]:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:
@@ -109,7 +112,8 @@ class Mule:
                     self.conman.initializeConnection(bundle, fromAddress)
                     while self.checkConnection():
                         nextBundle = self.sendNext()
-                        self.expectAck(nextBundle)
+                        if nextBundle:
+                            self.expectAck(nextBundle)
                 elif bundle.getType() == '1':
                     data = self.dataMan.sliceData(bundle.toData()[1])
                     for each in data:

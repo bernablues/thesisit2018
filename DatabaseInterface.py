@@ -31,6 +31,7 @@ class DatabaseInterface:
         try:
             self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
+            print sql
             self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
             self.DBI_logger.classLog('Committing to db...', 'INFO')
             db.commit()
