@@ -43,7 +43,6 @@ class DataManager:
         self.DataMan_logger.classLog('Inserting data...', 'INFO')
         if self.isBufferFull():
             self.dropData()
-            return False
         self.dbInterface.insertRow(data)
         self.DataMan_logger.classLog('Successfully inserted data.', 'INFO')        
         return True        
