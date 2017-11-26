@@ -11,16 +11,16 @@ class Bundle:
             bundleData = self.stringToList(data)
         elif type(data) is tuple:
             bundleData = self.tupleToList(data)
-        self.type = bundleData[0]
-        self.seq = bundleData[1]
+        self.type = str(bundleData[0])
+        self.seq = str(bundleData[1])
 
         if len(bundleData) < 3:
             bundleData[2] = ''
         if len(bundleData) < 4:
             bundleData[3] = ''
 
-        self.sid = bundleData[2]
-        self.payload = bundleData[3]
+        self.sid = str(bundleData[2])
+        self.payload = str(bundleData[3])
         self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
 
     def getBundleProperties(self):

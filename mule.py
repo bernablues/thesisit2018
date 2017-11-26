@@ -31,9 +31,9 @@ class Mule:
         self.MYSQL_PASSWORD = cfg['MYSQL']['PASSWORD']
         self.DATABASE_COLUMNS = cfg['MYSQL']['COLUMNS']
 
-        self.conman = ConnectionManager(cfg['MAX_ACK_TIMEOUT'], cfg['WIRELESS_INTERFACE'], self.HELLO_PORT, self.DATA_PORT)
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
         self.dataMan = DataManager(cfg['MAX_DATA_ENTRIES'], cfg['DROPPING_PROTOCOL'], self.dbi, cfg['DATA_TO_BUNDLE_SIZE'])
+        self.conman = ConnectionManager(cfg['MAX_ACK_TIMEOUT'], cfg['WIRELESS_INTERFACE'], self.HELLO_PORT, self.DATA_PORT, self.dataMan, cfg['DATA_TO_BUNDLE_SIZE'])
 
         self.dataSocket = self.conman.getDataSocket()
         self.bfi = BundleFlowInterface(self.dataSocket)
@@ -132,11 +132,15 @@ def main():
     mule = Mule()
 
     helloFactoryThread = mule.conman.startHelloThread()
+    thread = threading.Thread(target=mule.conman.listenForHello, args=(True,))
+    thread.daemon = True
 
+    thread.start()
     mule.start()
     
 def test():
     print "TEST MODE"
+    mule = Mule()
 
 if __name__ == "__main__":
     main()
