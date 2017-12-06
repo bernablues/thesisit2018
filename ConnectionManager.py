@@ -133,7 +133,7 @@ class ConnectionManager:
         fromAddress, fromPort = fromSocket 
         
         self.ConMan_logger.classLog('Received hello:,bundleData:,' + bundleData + ',from ADDR:,' + str(fromAddress), 'INFO')
-        print "Received hello:", bundleData, 'from', fromAddress
+        # print "Received hello:", bundleData, 'from', fromAddress
         self.__initializeConnection(fromAddress)
 
     def __buildHello(self):
@@ -147,7 +147,7 @@ class ConnectionManager:
             helloMessage = self.__buildHello()
             # Make this parametizable
             sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
-            print "HELLO: " + helloMessage
+            # print "HELLO: " + helloMessage
             self.ConMan_logger.classLog('Sent hello message to 172.24.1.255', 'INFO')
 
     def __emptyHelloSocket(self):

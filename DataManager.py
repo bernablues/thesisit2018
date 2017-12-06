@@ -139,6 +139,25 @@ class DataManager:
         self.DataMan_logger.classLog('Get data successful.', 'INFO')
         return data
 
+    def getBundle(self, deleteBundle = False):
+        checkDataTimeout = 0
+        self.DataMan_logger.classLog('Getting data...', 'INFO')
+        time.sleep(2)
+        checkDataTimeout += 1
+        if checkDataTimeout == 5:
+            return None
+        data = self.dbInterface.getRows(1)
+        if deleteBundle:
+            self.dbInterface.deleteRows(1)
+        self.DataMan_logger.classLog('Get data successful.', 'INFO')
+        data = str(data[0])[1:-1].split(', ')
+        data[0] = data[0][0:-1]
+        data[1] = data[1][0:-1]
+        data[2] = data[2][0:-1]
+        #CLEAN THIS SHIT
+        data[3] = data[3][1:-1]
+        return data
+
     def sliceData(self, data):
         # Fix this when bundle headers are defined
         timestampLength = 18

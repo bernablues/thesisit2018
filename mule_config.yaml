@@ -2,14 +2,14 @@ DATA_PORT: 10000
 HELLO_PORT: 5000
 
 MYSQL:
-  TABLE_NAME: 'sensor_data'
+  TABLE_NAME: 'Bundles'
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
   PASSWORD: 'thesisit'
-  COLUMNS: ['timestamp', 'seq_number', 'data']
+  COLUMNS: ['type', 'seq', 'sid', 'payload']
 
 MAX_ACK_TIMEOUT: 5
-WIRELESS_INTERFACE: 'wlp2s0'
+WIRELESS_INTERFACE: 'wlan0'
 
 MAX_DATA_ENTRIES: 50
 DROPPING_PROTOCOL: 0
