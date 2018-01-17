@@ -39,10 +39,13 @@ class DataManager:
             self.dropLast()
         return True
 
-    def insertData(self, data):
+    def insertData(self, data, seq_number = None):
         self.DataMan_logger.classLog('Inserting data...', 'INFO')
         if self.isBufferFull():
             self.dropData()
+        if self.hasData(data[1]):
+            return True
+
         self.dbInterface.insertRow(data)
         self.DataMan_logger.classLog('Successfully inserted data.', 'INFO')        
         return True        
@@ -136,6 +139,25 @@ class DataManager:
         self.DataMan_logger.classLog('Get data successful.', 'INFO')
         return data
 
+    def getBundle(self, deleteBundle = False):
+        checkDataTimeout = 0
+        self.DataMan_logger.classLog('Getting data...', 'INFO')
+        time.sleep(2)
+        checkDataTimeout += 1
+        if checkDataTimeout == 5:
+            return None
+        data = self.dbInterface.getRows(1)
+        if deleteBundle:
+            self.dbInterface.deleteRows(1)
+        self.DataMan_logger.classLog('Get data successful.', 'INFO')
+        data = str(data[0])[1:-1].split(', ')
+        data[0] = data[0][0:-1]
+        data[1] = data[1][0:-1]
+        data[2] = data[2][0:-1]
+        #CLEAN THIS SHIT
+        data[3] = data[3][1:-1]
+        return data
+
     def sliceData(self, data):
         # Fix this when bundle headers are defined
         timestampLength = 18
@@ -151,6 +173,17 @@ class DataManager:
             slicedData.append([each[0:10] + ' ' + each[10:18], each[18:21], each[21:22]])
         return slicedData
 
-    def getAllData(self):
+    def getAllData(self, seqNumbers = None):
         self.DataMan_logger.classLog('Get data successful.', 'INFO')
+
+        if seqNumbers:
+            results = self.dbInterface.getRowsFromSeqNumbers(seqNumbers)
+            results = self.padZeroesToDataSeq(results)
+            return results
         return self.dbInterface.getAllRows()
+
+    def getDataMap(self):
+        return map((lambda x: str(x[1])), self.getAllData())
+
+    def hasData(self, data):
+        return data in self.getDataMap()

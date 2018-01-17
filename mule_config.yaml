@@ -2,11 +2,11 @@ DATA_PORT: 10000
 HELLO_PORT: 5000
 
 MYSQL:
-  TABLE_NAME: 'sensor_data'
+  TABLE_NAME: 'Bundles'
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
-  PASSWORD: 'password'
-  COLUMNS: ['timestamp', 'seq_number', 'data']
+  PASSWORD: 'thesisit'
+  COLUMNS: ['type', 'seq', 'sid', 'payload']
 
 MAX_ACK_TIMEOUT: 5
 WIRELESS_INTERFACE: 'wlan0'

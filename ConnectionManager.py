@@ -3,14 +3,17 @@ import fcntl
 import struct
 import threading
 import time
+from Bundle import Bundle
 from BundleFlowInterface import BundleFlowInterface
 import logging
 from SDTNLogger import SDTNLogger
 
 class ConnectionManager:
-    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, experiments=None):
+    def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, dataMan = None, dataToBundleSize = 5, experiments=None):
         self.ConMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
         self.ConMan_logger.classLog('Initializing ConMan...', 'INFO')
+
+        self.dataToBundleSize = dataToBundleSize
 
         self.maxAckTimeout = maxAckTimeout
         self.currentAckTimeout = 0
@@ -24,6 +27,7 @@ class ConnectionManager:
         self.__initializeSockets()
 
         self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
+        self.helloDataman = dataMan
 
         self.connected = False
         self.connectedTo = False
@@ -69,6 +73,7 @@ class ConnectionManager:
         self.ConMan_logger.classLog('Initializing sockets...', 'INFO')
         self.dataSocket = self.__createDataSocket()
         self.helloSocket = self.__createHelloSocket()
+        self.__emptyHelloSocket()
 
     def __initializeConnection(self, address):
         self.ConMan_logger.classLog('Initializing connection...', 'INFO')
@@ -98,24 +103,51 @@ class ConnectionManager:
     def isConnected(self):
         return self.connected
 
-    def listenForHello(self):
+    def __sync(self, bundleData, fromSocket):
+        sequenceNumbers = set(bundleData[1:].split(' '))
+        ownSequenceNumbers = set(self.helloDataman.getDataMap())
+        dataToSync = list(ownSequenceNumbers - sequenceNumbers)
+        print "Received SEQ_NUM " + str(sequenceNumbers)
+        print "Own SEQ_NUM: " + str(ownSequenceNumbers)
+        print "DATA TO SEND: " + str(dataToSync)
+
+        if dataToSync:
+            bundle = Bundle(((1,-1,-1),self.helloDataman.getAllData(dataToSync[:self.dataToBundleSize])))
+            self.helloSocket.sendto(bundle.toString(), (fromSocket[0], self.dataPort))
+            print "SENDING: " + bundle.toString()
+
+    def listenForHello(self, syncMode=False):
         self.ConMan_logger.classLog('Listening for hello...', 'INFO')
         print "Listening for hello..."
+
+        if syncMode:
+            while True:
+                bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
+                fromAddress, fromPort = fromSocket
+                if fromAddress == self.ownIpAddress:
+                    continue
+
+                self.__sync(bundleData, fromSocket)
+
         bundleData, fromSocket = self.helloBundleFlowInterface.receiveBundle()
-        fromAddress, fromPort = fromSocket
+        fromAddress, fromPort = fromSocket 
+        
         self.ConMan_logger.classLog('Received hello:,bundleData:,' + bundleData + ',from ADDR:,' + str(fromAddress), 'INFO')
-        print "Received hello:", bundleData, 'from', fromAddress
+        # print "Received hello:", bundleData, 'from', fromAddress
         self.__initializeConnection(fromAddress)
+
+    def __buildHello(self):
+        return "2" + ' '.join(self.helloDataman.getDataMap())
 
     def __sendHello(self, sock):
         self.ConMan_logger.classLog('Sending hello message...', 'INFO')
 
-        helloMessage = "2"
-
         while True:
             time.sleep(1)
+            helloMessage = self.__buildHello()
             # Make this parametizable
             sock.sendto(helloMessage, ('172.24.1.255', self.helloPort))
+            # print "HELLO: " + helloMessage
             self.ConMan_logger.classLog('Sent hello message to 172.24.1.255', 'INFO')
 
     def __emptyHelloSocket(self):

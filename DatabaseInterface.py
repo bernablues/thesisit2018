@@ -31,7 +31,6 @@ class DatabaseInterface:
         try:
             self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
             cursor.execute(sql)
-            print sql
             self.DBI_logger.classLog('Successfully executed SQL command:,' + sql, 'INFO')
             self.DBI_logger.classLog('Committing to db...', 'INFO')
             db.commit()
@@ -79,6 +78,31 @@ class DatabaseInterface:
 
         self.DBI_logger.classLog('Getting rows from db...', 'INFO')
         sql = sql + " LIMIT " + str(numberOfRows)
+
+        try:
+            self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
+            cursor.execute(sql)
+            self.DBI_logger.classLog('Successfully executed SQL command:,'+ sql, 'INFO')
+
+            results = cursor.fetchall()
+            self.DBI_logger.classLog('Rows:,' + str(results), 'INFO')
+        except:
+            print "DB Error"
+            self.DBI_logger.classLog('DB Error:,getting rowst', 'WARNING')
+
+        self.DBI_logger.classLog('Closing db.','INFO')
+        db.close()
+
+        return results
+
+    def getRowsFromSeqNumbers(self, seqNumbers):
+        db = self.__openDatabase()
+        cursor = db.cursor()
+        
+        whereClause = ' OR '.join(map((lambda x: "seq_number=" + str(x)), seqNumbers))
+
+        sql = "SELECT " + ', '.join(self.columns) + " FROM " + self.table + " WHERE " + whereClause
+        self.DBI_logger.classLog('Getting rows from db...', 'INFO')
 
         try:
             self.DBI_logger.classLog('Executing SQL command:,' + sql, 'INFO')
