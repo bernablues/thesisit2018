@@ -116,6 +116,7 @@ class Mule:
                             self.expectAck(nextBundle)
                 elif bundle.getType() == '1':
                     self.dataMan.insertData(bundle.toString().split())
+                    # insert metadata on other table
                     self.acknowledge(bundle)
 
             except KeyboardInterrupt:
