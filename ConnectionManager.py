@@ -104,6 +104,10 @@ class ConnectionManager:
         return self.connected
 
     def __sync(self, bundleData, fromSocket):
+        # check table using received ip address from hello
+        # check for bundle seq x SID that has already been sent to that ip address
+        # send unsent bundles to received ip address
+        # 
         sequenceNumbers = set(bundleData[1:].split(' '))
         ownSequenceNumbers = set(self.helloDataman.getDataMap())
         dataToSync = list(ownSequenceNumbers - sequenceNumbers)
