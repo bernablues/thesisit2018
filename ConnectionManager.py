@@ -8,6 +8,8 @@ from BundleFlowInterface import BundleFlowInterface
 import logging
 from SDTNLogger import SDTNLogger
 
+from DatabaseInterface import DatabaseInterface
+
 class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, dataMan = None, dataToBundleSize = 5, experiments=None):
         self.ConMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
@@ -28,6 +30,8 @@ class ConnectionManager:
 
         self.helloBundleFlowInterface = BundleFlowInterface(self.helloSocket, '')
         self.helloDataman = dataMan
+
+        self.routingDbi = DatabaseInterface('routing_table', 'sdtn', 'sdtn', 'password', ['bundle_seq', 'sensor_id', 'sent_to'])
 
         self.connected = False
         self.connectedTo = False
@@ -107,18 +111,46 @@ class ConnectionManager:
         # check table using received ip address from hello
         # check for bundle seq x SID that has already been sent to that ip address
         # send unsent bundles to received ip address
-        # 
-        sequenceNumbers = set(bundleData[1:].split(' '))
-        ownSequenceNumbers = set(self.helloDataman.getDataMap())
-        dataToSync = list(ownSequenceNumbers - sequenceNumbers)
-        print "Received SEQ_NUM " + str(sequenceNumbers)
-        print "Own SEQ_NUM: " + str(ownSequenceNumbers)
-        print "DATA TO SEND: " + str(dataToSync)
+        routingRows = self.routingDbi.getAllRows()
+        allBundles  = self.helloDataman.getAllData()
+        fromAddress = fromSocket[0]
+        bundlesToSend = []
+        bundleFilter = []
 
-        if dataToSync:
-            bundle = Bundle(((1,-1,-1),self.helloDataman.getAllData(dataToSync[:self.dataToBundleSize])))
-            self.helloSocket.sendto(bundle.toString(), (fromSocket[0], self.dataPort))
-            print "SENDING: " + bundle.toString()
+        for row in routingRows:
+            if row[2] == fromAddress:
+                bundleFilter.append((row[0], row[1]))
+        
+        for bundle in allBundles:
+            sendBundle = True
+            if not bundleFilter:
+                bundlesToSend = allBundles
+                break
+            for filterItem in bundleFilter:
+                if not bundle in bundlesToSend and filterItem[0] == bundle[1] and filterItem[1] == bundle[2]:
+                    sendBundle = False
+            if sendBundle:
+                bundlesToSend.append(bundle)
+                
+        
+        print bundlesToSend
+        if bundlesToSend:
+            for bundle in bundlesToSend:
+                headers = (bundle[0], bundle[1], bundle[2])
+                tempBundle = Bundle((headers, (bundle[3])))
+                self.helloSocket.sendto(tempBundle.toString(), (fromAddress, self.dataPort))
+                self.routingDbi.insertRow([str(bundle[1]), str(bundle[2]), fromAddress])
+                print "Sending: " + tempBundle.toString()
+
+        # old sync 
+        # sequenceNumbers = set(bundleData[1:].split(' '))
+        # ownSequenceNumbers = set(self.helloDataman.getDataMap())
+        # dataToSync = list(ownSequenceNumbers - sequenceNumbers)
+
+        # if dataToSync:
+        #     bundle = Bundle(((1,-1,-1),self.helloDataman.getAllData(dataToSync[:self.dataToBundleSize])))
+        #     self.helloSocket.sendto(bundle.toString(), (fromSocket[0], self.dataPort))
+        #     print "SENDING: " + bundle.toString()
 
     def listenForHello(self, syncMode=False):
         self.ConMan_logger.classLog('Listening for hello...', 'INFO')

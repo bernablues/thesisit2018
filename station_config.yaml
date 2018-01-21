@@ -5,7 +5,7 @@ MYSQL:
   TABLE_NAME: 'sensor_data'
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
-  PASSWORD: 'thesisit'
+  PASSWORD: 'password'
   COLUMNS: ['timestamp', 'seq_number', 'data']
 
 MAX_ACK_TIMEOUT: 5

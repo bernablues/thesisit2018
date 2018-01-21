@@ -5,7 +5,7 @@ MYSQL:
   TABLE_NAME: 'Bundles'
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
-  PASSWORD: 'thesisit'
+  PASSWORD: 'password'
   COLUMNS: ['type', 'seq', 'sid', 'payload']
 
 MAX_ACK_TIMEOUT: 5

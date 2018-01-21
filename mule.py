@@ -32,6 +32,7 @@ class Mule:
         self.DATABASE_COLUMNS = cfg['MYSQL']['COLUMNS']
 
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
+        # self.routingDbi = DatabaseInterface('routing_table', self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, ['bundle_seq', 'sensor_id', 'sent_to'])
         self.dataMan = DataManager(cfg['MAX_DATA_ENTRIES'], cfg['DROPPING_PROTOCOL'], self.dbi, cfg['DATA_TO_BUNDLE_SIZE'])
         self.conman = ConnectionManager(cfg['MAX_ACK_TIMEOUT'], cfg['WIRELESS_INTERFACE'], self.HELLO_PORT, self.DATA_PORT, self.dataMan, cfg['DATA_TO_BUNDLE_SIZE'])
 
@@ -116,7 +117,6 @@ class Mule:
                             self.expectAck(nextBundle)
                 elif bundle.getType() == '1':
                     self.dataMan.insertData(bundle.toString().split())
-                    # insert metadata on other table
                     self.acknowledge(bundle)
 
             except KeyboardInterrupt:
