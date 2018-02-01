@@ -30,7 +30,7 @@ class Sensor:
         self.TABLE_NAME = 'sensor_data'
         self.DATABASE_NAME = 'sdtn'
         self.MYSQL_USER = 'sdtn'
-        self.MYSQL_PASSWORD = 'thesisit'
+        self.MYSQL_PASSWORD = 'password'
         self.DATABASE_COLUMNS = ['timestamp', 'seq_number', 'data']
 
         self.conman = ConnectionManager(5, 'wlp2s0', self.HELLO_PORT, self.DATA_PORT)

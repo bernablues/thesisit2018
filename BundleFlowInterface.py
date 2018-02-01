@@ -32,7 +32,6 @@ class BundleFlowInterface:
     def receiveBundle(self, timeout=None):
         self.BFI_logger.classLog('Receiving bundle...', 'INFO')
         self.sendDataTable_logger.classLog('Receiving bundle...', 'INFO')
-        
         if timeout:
             self.sock.settimeout(timeout)
             self.BFI_logger.classLog('Setting TIMEOUT:,' + str(timeout), 'INFO')
