@@ -111,6 +111,21 @@ class Mule:
                 else:
                     bundle.setAction(flowManager)
                     
+                bundleData=[bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, ""]
+                print "Bundle headers:", bundleData
+
+                match_flowTable=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+                noMatch_flowTable=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+                flowManager = FlowManager(bundleData, match_flowTable)
+                # flowManager = flowManager(bundleData, noMatch_flowTable)
+                print "Flow Table"
+                print ""
+                print(flowManager.getFlowTable())
+
+                print ""
+                print(flowManager.flowMatching())
+
+
                 #refactor to function
                 if bundle.getType() == '3':
                     self.acknowledge(bundle)
