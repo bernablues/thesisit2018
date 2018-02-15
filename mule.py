@@ -108,6 +108,9 @@ class Mule:
 
                 if flowManager == '0':
                     continue
+                else:
+                    bundle.setAction(flowManager)
+                    
                 #refactor to function
                 if bundle.getType() == '3':
                     self.acknowledge(bundle)

@@ -6,7 +6,7 @@ MYSQL:
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
   PASSWORD: 'thesisit'
-  COLUMNS: ['type', 'seq', 'sid', 'payload']
+  COLUMNS: ['type', 'seq', 'sid', 'payload', 'action']
 
 MAX_ACK_TIMEOUT: 5
 WIRELESS_INTERFACE: 'wlp2s0'
