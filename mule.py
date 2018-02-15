@@ -11,6 +11,7 @@ from DataManager import DataManager
 from Bundle import Bundle
 import logging
 from SDTNLogger import SDTNLogger
+from FlowManager import FlowManager
 
 class Mule:
 
@@ -102,7 +103,11 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
+                flowTable = []
+                flowManager = FlowManager([bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, ''], [])
 
+                if flowManager == '0':
+                    continue
                 #refactor to function
                 if bundle.getType() == '3':
                     self.acknowledge(bundle)

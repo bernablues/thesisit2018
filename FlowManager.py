@@ -38,7 +38,7 @@ class FlowManager:
     def getIPaddr(self):
         return self.ipAddr
 
-    def getDataSummary(seld):
+    def getDataSummary(self):
         return self.dataSummary
 
     def parseDataSummary(self):

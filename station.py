@@ -130,9 +130,10 @@ class Station:
             fromAddress, fromPort = fromSocket
             self.bfi.setToAddress(fromAddress)
             bundle = Bundle(bundleData)
-
+            bundle_seq = bundle.getSeq()
             data = self.dataMan.sliceData(bundle.toData()[1])
             for each in data:
+                each.append(bundle_seq)
                 self.dataMan.insertData(each)
             self.acknowledge(bundle)
 
