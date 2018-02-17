@@ -57,45 +57,38 @@ class FlowManager:
 
     def matchFlow(self, bundleData):
         self.bundleData = bundleData
-
-        bundleLen = len(bundleData)
         rule_length = len(self.flowTable[0][1:-1])
-    
         matchedFlowAction = 'No Flow Action Found'
-        
-        for sensorData in range(0, bundleLen):
-            # print "sensorData", sensorData
-            # Iterates per row
-            for ruleIndex, rule in enumerate(self.flowTable):
-                print "==="
-                print "rule #:" + str(ruleIndex) + "rule: " + str(rule)
-                print "==="
+        # Iterates per row
+        for ruleIndex, rule in enumerate(self.flowTable):
+            # print "==="
+            # print "rule #:" + str(ruleIndex) + "rule: " + str(rule)
+            # print "==="
+            # print ""
+
+            # Iterates per field(columb) in flow rule(row)
+            ctr = 0
+            for fieldIndex, ruleField in enumerate(rule[1:-1]):
+                print "ruleField: bundleData: ", ruleField, self.bundleData[fieldIndex]
+                
+                if(self.bundleData[fieldIndex] == ruleField or ruleField=='*'):
+                    print "fieldIndex: " + str(fieldIndex) + " ruleField: " + str(ruleField) + " bundleData: " + self.bundleData[fieldIndex]                        
+                    ctr = ctr+1
+             
+            # Checks if kumagat sa certain flow rule
+            if(ctr == rule_length):
+
                 print ""
+                print "==="
+                matchedFlowIndex = ruleIndex
+                print "matchedFlowRule (Index): ", matchedFlowIndex 
+                
+                matchedFlowRule = self.flowTable[ruleIndex]
+                print "Flow Rule", matchedFlowRule
 
-                # Iterates per field(columb) in flow rule(row)
-                ctr = 0
-                for fieldIndex, ruleField in enumerate(rule[1:-1]):
-                    # print "ruleField: bundleData: ", ruleField, self.bundleData[sensorData][fieldIndex]
-                    
-                    if(self.bundleData[sensorData][fieldIndex] == ruleField or ruleField=='*'):
-                        # print "fieldIndex: " + str(fieldIndex) + " ruleField: " + str(ruleField) + " bundleData: " + self.bundleData[sensorData][fieldIndex]                        
-                        ctr = ctr+1
-                 
-                # Checks if kumagat sa certain flow rule
-                if(ctr == rule_length):
+                matchedFlowAction = self.flowTable[matchedFlowIndex][-1]
+                break
 
-                    # print ""
-                    # print "==="
-                    matchedFlowIndex = ruleIndex
-                    # print "matchedFlowRule (Index): ", matchedFlowIndex 
-                    
-                    matchedFlowRule = self.flowTable[ruleIndex]
-                    # print "Flow Rule", matchedFlowRule
-
-                    matchedFlowAction = self.flowTable[matchedFlowIndex][-1]
-                    break
-        
-        # print "matchedFlowAction:", matchedFlowAction
         return matchedFlowAction
 
     def __getMatchedFlowIndex(self):
@@ -143,7 +136,7 @@ def main():
 
     # ==================================== v2 demo
     # bundleData=[['1', '4', '1', '172.24.1.1', '']]
-    bundleData=[['5', '4', '5', '5', ''], ['6', '4', '6', '5', ''], ['1', '4', '1', '172.24.1.1', '']]
+    bundleData=['1', '4', '1', '172.24.1.1', '']
     flowTable_mini=[['1', '4', '1', '172.24.1.2', ''], ['1', '4', '1', '172.24.1.1', ''], ['1', '4', '1', '172.24.1.3', '']]
     flowTable_master=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
     
