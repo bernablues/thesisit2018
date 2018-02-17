@@ -112,11 +112,11 @@ class Mule:
                 print "Bundle headers:", bundleData
 
                 # drop demo
-                # match_flowTable=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+                match_flowTable=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
                 # epidemic
                 # match_flowTable=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '2'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
                 # directo to base
-                match_flowTable=[['5', '5', '4', '5', '172.24.1.226', '', '0'], ['1', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '1'], ['3', '5', '4', '5', '172.24.1.3', '', '5']]
+                # match_flowTable=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, "", '1'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
                 # noMatch_flowTable=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
                 flowManager = FlowManager(bundleData, match_flowTable)
                 action = flowManager.flowMatching()

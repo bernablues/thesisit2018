@@ -64,31 +64,35 @@ class FlowManager:
         intersection_a = [list(filter(lambda x: x in self.bundleData, sublist)) for sublist in self.flowTable]
 
         # Returns list ng intersections ng bundleData and flowTable
-        print "intersection", (intersection_a)
+        # print "intersection", (intersection_a)
 
      
-        try:
+        # try:
+
+        # print "yo"
 
             # Gets the index of the matching flow
-            matchedFlowIndex = intersection_a.index(self.bundleData)
-            print "index ng intersection", matchedFlowIndex
+            # matchedFlowIndex = intersection_a.index(self.bundleData)
+        matchedFlowIndex = 1
+            # print "index ng intersection", matchedFlowIndex
 
             # Gets the matching flow (list/whole row)
-            matchedFlow = self.flowTable[matchedFlowIndex]
-            print "matched flow index", matchedFlow
+        matchedFlow = self.flowTable[matchedFlowIndex]
+            # print "matched flow index", matchedFlow
 
             # Gets the matching flow ruleNo
-            matchedFlowRuleNo = self.flowTable[matchedFlowIndex][0]
-            print "matched flow rule", matchedFlowRuleNo
+        matchedFlowRuleNo = self.flowTable[matchedFlowIndex][0]
+            # print "matched flow rule", matchedFlowRuleNo
 
             # Gets corresponding action of matched flow 
-            matchedFlowAction = self.flowTable[matchedFlowIndex][6]
-            print "matched flow action", matchedFlowAction
+        matchedFlowAction = self.flowTable[matchedFlowIndex][6]
+            # print "matched flow action", matchedFlowAction
 
-            return matchedFlowAction
+        print "Matched Flow Action: ", matchedFlowAction
+        return matchedFlowAction
 
-        except ValueError:
-            print "No Matching Flow"            
+        # except ValueError:
+            # print "No Matching Flow"            
 
     def __getIntersection(self):
         intersection_a = [list(filter(lambda x: x in self.bundleData, sublist)) for sublist in self.flowTable]
@@ -138,19 +142,19 @@ class FlowManager:
         # log me
     
 def main():
-    bundleData=['1', '4', '1', '172.24.1.1', '']
-    match_flowTable=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+    # bundleData=['1', '4', '1', '172.24.1.1', '']
+    # match_flowTable=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
     noMatch_flowTable=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
 
 
-    flow = FlowManager(bundleData, match_flowTable)
-    flow.getFlowTable()
-    x = flow.flowMatching()
-    print "return value", x
+    # flow = FlowManager(bundleData, match_flowTable)
+    # flow.getFlowTable()
+    # x = flow.flowMatching()
+    # print "return value", x
 
-    flow.createNewFlow(['3', '5', '2', '172.24.1.5', ''])
+    # flow.createNewFlow(['3', '5', '2', '172.24.1.5', ''])
 
-    print(flow.getFlowTable())
+    # print(flow.getFlowTable())
 
     # flow__getIntersection()
     # flow.__getMatchedFlowIndex()

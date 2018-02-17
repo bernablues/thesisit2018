@@ -77,7 +77,7 @@ class Bundle:
 
     def toString(self):
         self.Bundle_logger.classLog('Converting to string...', 'INFO')
-        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload
+        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + self.action
 
     def toData(self):
         self.Bundle_logger.classLog('Converting to data...', 'INFO')
