@@ -9,8 +9,6 @@ from ConnectionManager import ConnectionManager
 from BundleFlowInterface import BundleFlowInterface
 from DataManager import DataManager   
 from Bundle import Bundle
-import logging
-from SDTNLogger import SDTNLogger
 from FlowManager import FlowManager
 
 class Mule:
@@ -18,9 +16,6 @@ class Mule:
     def __init__(self, experiments=None):
         with open("mule_config.yaml", 'r') as ymlfile:
             cfg = yaml.load(ymlfile)
-
-        self.mule_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')    
-        self.mule_logger.classLog('Initializing mule...', 'INFO')
 
         self.SID = cfg['SENSOR_ID']
         self.DATA_PORT = cfg['DATA_PORT']
@@ -41,26 +36,21 @@ class Mule:
 
         self.currentSeq = 1
 
-        self.mule_logger.classLog('Mule initialized:,SID:,' + str(self.SID) + ',DATA_PORT:,' + str(self.DATA_PORT) + ',HELLO_PORT:,' + str(self.HELLO_PORT), 'INFO')
 
     def resendBundle(self, bundle):
-        self.mule_logger.classLog('Resending bundle...', 'INFO')
         self.bfi.sendBundle(bundle)
 
     def acknowledge(self, bundle):
-        self.mule_logger.classLog('Acknowledging bundle...', 'INFO')
         bundleData = '0 ' + str(bundle.getSeq()) + ' x ' + ' x' #does not work when two headers only
         ack = Bundle(bundleData)
         self.bfi.sendBundle(ack)
 
     def appendHeaders(self, bundleType, data):
-        self.mule_logger.classLog('Appending headers...', 'INFO')
         headers = (bundleType, self.currentSeq, self.SID)
         bundleData = (headers, data)
         return bundleData
 
     def sendNext(self):
-        self.mule_logger.classLog('Sending next bundle...', 'INFO')
         data = self.dataMan.getBundle(True)
         if not data:
             self.conman.terminateConnection()
@@ -70,7 +60,6 @@ class Mule:
         return bundle
 
     def expectAck(self, bundle):
-        self.mule_logger.classLog('Expecting ACK...', 'INFO')
         terminated = False
         while not terminated:
 
@@ -92,11 +81,9 @@ class Mule:
         return False
 
     def checkConnection(self):
-        self.mule_logger.classLog('Checking connection...', 'INFO')
         return self.conman.isConnected()
 
     def start(self):
-        self.mule_logger.classLog('Starting mule....', 'INFO')
         while True:
             try:
                 bundleData, fromSocket = self.bfi.receiveBundle()
@@ -129,12 +116,10 @@ class Mule:
                     self.acknowledge(bundle)
 
             except KeyboardInterrupt:
-                self.mule_logger.classLog('Keyboard interrupted. Terminating from mule.', 'INFO')
                 print "Keyboard interrupted. Terminating from mule." 
                 break
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
                 print sys.exc_info()
-                self.mule_logger.classLog('Keyboard interrupted. Terminating from mule.', 'WARNING')
 
 def main():
     mule = Mule()

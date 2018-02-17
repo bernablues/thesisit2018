@@ -1,11 +1,5 @@
-import logging
-from SDTNLogger import SDTNLogger
-
 class Bundle:
     def __init__(self, data, experiments=None):
-        self.Bundle_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
-        self.Bundle_logger.classLog("Initializing Bundle...", 'INFO')
-
         # Check if this can be directly touched by outside code
         if type(data) is str:
             bundleData = self.stringToList(data)
@@ -23,36 +17,28 @@ class Bundle:
         self.sid = str(bundleData[2])
         self.payload = str(bundleData[3])
         print "Bundle: " + self.payload
-        self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
 
         self.action = '2'
 
     def getBundleProperties(self):
-        self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
         return [self.type, self.sid, self.payload]
 
     def getType(self):
-        self.Bundle_logger.classLog('Getting bundle TYPE:,'+ str(self.type), 'INFO')
         return self.type
 
     def getSID(self):
-        self.Bundle_logger.classLog('Getting bundle SID:,'+ str(self.sid), 'INFO')
         return self.sid
 
     def getSeq(self):
-        self.Bundle_logger.classLog('Getting SEQ:,'+ str(self.seq), 'INFO')
         return self.seq
 
     def getPayload(self):
-        self.Bundle_logger.classLog('Getting bundle PAYLOAD:,'+ str(self.payload), 'DEBUG')
-        self.Bundle_logger.classLog('Getting bundle PAYLOAD...', 'INFO')
         return self.payload
     
     def setAction(self, action):
         self.action = action
 
     def stringToList(self, string):
-        self.Bundle_logger.classLog('Converting string to list...', 'INFO')
         bundleData = string.split()
         bundleType = bundleData[0]
         seq = bundleData[1]
@@ -62,7 +48,6 @@ class Bundle:
         return [bundleType, seq, sid, data]
 
     def tupleToList(self, tupleData):
-        self.Bundle_logger.classLog('Converting tuple to list...', 'INFO')
         headers = tupleData[0]
         bundleType = headers[0]
         seq = headers[1]
@@ -76,9 +61,7 @@ class Bundle:
 
 
     def toString(self):
-        self.Bundle_logger.classLog('Converting to string...', 'INFO')
         return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.action)
 
     def toData(self):
-        self.Bundle_logger.classLog('Converting to data...', 'INFO')
         return [str(self.sid), str(self.payload)]

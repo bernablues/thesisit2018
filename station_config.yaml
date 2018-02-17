@@ -5,11 +5,11 @@ MYSQL:
   TABLE_NAME: 'sensor_data'
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
-  PASSWORD: 'thesisit'
+  PASSWORD: 'password'
   COLUMNS: ['timestamp', 'seq_number', 'data']
 
 MAX_ACK_TIMEOUT: 5
-WIRELESS_INTERFACE: 'wlp2s0'
+WIRELESS_INTERFACE: 'wlan0'
 
 MAX_DATA_ENTRIES: 100
 DROPPING_PROTOCOL: 0
