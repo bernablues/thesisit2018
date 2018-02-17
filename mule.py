@@ -106,11 +106,12 @@ class Mule:
                 flowTable = []
                 flowManager = FlowManager([bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, ''], [])
 
+
                 if flowManager == '0':
                     continue
                 else:
-                    bundle.setAction(flowManager)
-                    
+                    bundle.setAction('2')
+
                 #refactor to function
                 if bundle.getType() == '3':
                     self.acknowledge(bundle)
@@ -132,7 +133,7 @@ class Mule:
                 print "Keyboard interrupted. Terminating from mule." 
                 break
             except: #usually triggers on no network reachable eg. wifi off or reconnecting and ctrl c
-                print "Not reachable"
+                print sys.exc_info()
                 self.mule_logger.classLog('Keyboard interrupted. Terminating from mule.', 'WARNING')
 
 def main():

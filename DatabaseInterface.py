@@ -1,5 +1,6 @@
 import MySQLdb
 import logging
+import sys
 from SDTNLogger import SDTNLogger
 
 class DatabaseInterface:
@@ -38,6 +39,7 @@ class DatabaseInterface:
         except:
             self.DBI_logger.classLog('DB Rollback', 'WARNING')
             print 'DB Rollback'
+            print sys.exc_info()
             db.rollback()
         
         self.DBI_logger.classLog('Closing db.', 'INFO')

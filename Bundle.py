@@ -25,7 +25,7 @@ class Bundle:
         print "Bundle: " + self.payload
         self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
 
-        self.action = None
+        self.action = '2'
 
     def getBundleProperties(self):
         self.Bundle_logger.classLog('Bundle initialized:,TYPE:,' + str(self.type) + ',SEQ:,' + str(self.seq) + ',SID:,' + str(self.sid) + ',PAYLOAD:,' + str(self.payload), 'INFO')
@@ -77,7 +77,7 @@ class Bundle:
 
     def toString(self):
         self.Bundle_logger.classLog('Converting to string...', 'INFO')
-        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload
+        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.action)
 
     def toData(self):
         self.Bundle_logger.classLog('Converting to data...', 'INFO')
