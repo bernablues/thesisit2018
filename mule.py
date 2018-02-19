@@ -90,14 +90,17 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
-                flowTable = []
-                flowManager = FlowManager([bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, ''], [])
+                flowTable=[['*', '*', '*', '*', '172.24.1.10', '', '2'], ['*', '*', '*', '*', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+                flowManager = FlowManager(flowTable)
 
+                data = [bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, '']
 
-                if flowManager == '0':
+                action = flowManager.matchFlow(data)
+                print "matched action: " + action
+                if action == '0':
                     continue
                 else:
-                    bundle.setAction('2')
+                    bundle.setAction(action)
 
                 #refactor to function
                 if bundle.getType() == '3':

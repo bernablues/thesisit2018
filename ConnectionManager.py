@@ -110,9 +110,6 @@ class ConnectionManager:
             if bundle[4] == '1':
                 # this filters bundles
                 continue
-            if not bundleFilter:
-                bundlesToSend = allBundles
-                break
             for filterItem in bundleFilter:
                 if not bundle in bundlesToSend and filterItem[0] == bundle[1] and filterItem[1] == bundle[2]:
                     sendBundle = False

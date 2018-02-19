@@ -9,7 +9,7 @@ MYSQL:
   COLUMNS: ['type', 'seq', 'sid', 'payload', 'action']
 
 MAX_ACK_TIMEOUT: 5
-WIRELESS_INTERFACE: 'wlan0'
+WIRELESS_INTERFACE: 'wlp2s0'
 
 MAX_DATA_ENTRIES: 50
 DROPPING_PROTOCOL: 0

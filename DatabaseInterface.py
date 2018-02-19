@@ -124,6 +124,8 @@ class DatabaseInterface:
             results = cursor.fetchall()
         except:
             print "DB Error"
+            print sys.exc_info()
+            print sql
 
         db.close()
 
