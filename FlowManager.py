@@ -134,12 +134,23 @@ class FlowManager:
         self.flowTable.remove(self.flowTable[ruleNo-1])
         # log me
 
-    def ping(self):
+    def post_r(self):
         server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
         # Insert IP_address here
         data = json.dumps({'name':'Test connection', 'description':'Here here'})
         r = requests.post(server_url, data)
         print r.json()
+
+    def get_r(self):
+        server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
+        r = requests.get(url = server_url)
+        print "r\n\n", r
+        print "status_code:\n\n", r.status_code
+        print "headers\n\n", r.headers
+        print "Content-Type\n\n", r.headers['Content-Type']
+        print "Content\n\n", r.content
+
+
 
 
     
