@@ -1,5 +1,3 @@
-import requests, json
-
 #bundleData = [type, bundleSeq, sid, ipAddr, dataSummary (eto yung minMaxAve, etc)]
 #flowTable = [ruleNo, type, bundleSeq, sid, ipAddr, dataSummary (eto yung minMaxAve, etc), action]
   
@@ -71,22 +69,22 @@ class FlowManager:
             # Iterates per field(columb) in flow rule(row)
             ctr = 0
             for fieldIndex, ruleField in enumerate(rule[1:-1]):
-                # print "ruleField: bundleData: ", ruleField, self.bundleData[fieldIndex]
+                print "ruleField: bundleData: ", ruleField, self.bundleData[fieldIndex]
                 
                 if(self.bundleData[fieldIndex] == ruleField or ruleField=='*'):
-                    # print "fieldIndex: " + str(fieldIndex) + " ruleField: " + str(ruleField) + " bundleData: " + self.bundleData[fieldIndex]                        
+                    print "fieldIndex: " + str(fieldIndex) + " ruleField: " + str(ruleField) + " bundleData: " + self.bundleData[fieldIndex]                        
                     ctr = ctr+1
              
             # Checks if kumagat sa certain flow rule
             if(ctr == rule_length):
 
-                # print ""
-                # print "==="
+                print ""
+                print "==="
                 matchedFlowIndex = ruleIndex
-                # print "matchedFlowRule (Index): ", matchedFlowIndex 
+                print "matchedFlowRule (Index): ", matchedFlowIndex 
                 
                 matchedFlowRule = self.flowTable[ruleIndex]
-                # print "Flow Rule", matchedFlowRule
+                print "Flow Rule", matchedFlowRule
 
                 matchedFlowAction = self.flowTable[matchedFlowIndex][-1]
                 break
@@ -133,15 +131,6 @@ class FlowManager:
         # pass rule number/numbers, then rekta index
         self.flowTable.remove(self.flowTable[ruleNo-1])
         # log me
-
-    def ping(self):
-        server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
-        # Insert IP_address here
-        data = json.dumps({'name':'Test connection', 'description':'Here here'})
-        r = requests.post(server_url, data)
-        print r.json()
-
-
     
 def main():
 
@@ -149,7 +138,7 @@ def main():
     # bundleData=[['1', '4', '1', '172.24.1.1', '']]
     bundleData=['1', '4', '1', '172.24.1.1', '']
     flowTable_mini=[['1', '4', '1', '172.24.1.2', ''], ['1', '4', '1', '172.24.1.1', ''], ['1', '4', '1', '172.24.1.3', '']]
-    flowTable_master=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+    flowTable_master=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
     
     flow = FlowManager(flowTable_master)
     
@@ -165,6 +154,7 @@ def main():
     print "Matching flows"
     x = flow.matchFlow(bundleData)
     print "Matched Flow Action", x
+    print "Action type:", type(x)   
 
 if __name__ == "__main__":
     main()

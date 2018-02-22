@@ -4,7 +4,7 @@ HELLO_PORT: 5000
 MYSQL:
   TABLE_NAME: 'Bundles'
   DATABASE_NAME: 'sdtn'
-  USER: 'sdtn'
+  USER: 'root'
   PASSWORD: 'password'
   COLUMNS: ['type', 'seq', 'sid', 'payload', 'action']
 
