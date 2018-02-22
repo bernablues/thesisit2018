@@ -136,7 +136,11 @@ def main():
     
 def test():
     print "TEST MODE"
-    mule = Mule()
+    # mule = Mule()
+    bundleJSON = {'type':'1' , 'bundleSeq':'4', 'sid':'1', 'ipAddr':'172.24.1.3'}
+
+    flowManager.packetIn(bundleJSON)
+    flowManager.sync()
 
 if __name__ == "__main__":
-    main()
+    test()

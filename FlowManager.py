@@ -134,14 +134,14 @@ class FlowManager:
         self.flowTable.remove(self.flowTable[ruleNo-1])
         # log me
 
-    def post_r(self):
+    def packetIn(self, bundleJSON):
         server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
         # Insert IP_address here
-        data = json.dumps({'name':'Test connection', 'description':'Here here'})
-        r = requests.post(server_url, data)
+        # data = json.dumps({'name':'Test connection', 'description':'Here here'})
+        r = requests.post(server_url, bundleJSON)
         print r.json()
 
-    def get_r(self):
+    def sync(self):
         server_url="http://sd-dtn-controller.herokuapp.com/post"
         r = requests.get(url = server_url)
         # print "r\n\n", r
