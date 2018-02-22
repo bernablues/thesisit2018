@@ -142,12 +142,12 @@ class FlowManager:
         print r.json()
 
     def get_r(self):
-        server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
+        server_url="http://sd-dtn-controller.herokuapp.com/post"
         r = requests.get(url = server_url)
-        print "r\n\n", r
-        print "status_code:\n\n", r.status_code
-        print "headers\n\n", r.headers
-        print "Content-Type\n\n", r.headers['Content-Type']
+        # print "r\n\n", r
+        # print "status_code:\n\n", r.status_code
+        # print "headers\n\n", r.headers
+        # print "Content-Type\n\n", r.headers['Content-Type']
         print "Content\n\n", r.content
 
 
