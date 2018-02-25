@@ -138,8 +138,13 @@ def test():
     print "TEST MODE"
     # mule = Mule()
     bundleJSON = {'type':'1' , 'bundleSeq':'4', 'sid':'1', 'ipAddr':'172.24.1.3'}
-
+    flowTable=[['*', '*', '*', '*', '172.24.1.10', '', '2'], ['*', '*', '*', '*', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+    flowManager = FlowManager(flowTable)
+    print "\nPacket In Test"
+    print "*******************************" 
     flowManager.packetIn(bundleJSON)
+    print "\nSync Test"
+    print "*******************************"  
     flowManager.sync()
 
 if __name__ == "__main__":

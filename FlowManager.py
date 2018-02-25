@@ -69,11 +69,45 @@ class FlowManager:
             # print ""
 
             # Iterates per field(columb) in flow rule(row)
+
+
+            #bundleData_updated = [type, bundleSeq, sid, ipAddr, d_ave_gt, d_ave_eq, d_ave_lt, d_min_gt, d_min_eq, d_min_lt, d_max_gt, d_max_eq, d_max_lt]
+            #bundleData_final = [type, bundleSeq, sid, ipAddr, averageData, minData, maxData]
+
             ctr = 0
             for fieldIndex, ruleField in enumerate(rule[1:-1]):
                 # print "ruleField: bundleData: ", ruleField, self.bundleData[fieldIndex]
                 
-                if(self.bundleData[fieldIndex] == ruleField or ruleField=='*'):
+                if((fieldIndex == 4) || (fieldIndex == 7) || (fieldIndex == 10) || (fieldIndex == 6) || (fieldIndex == 9) || (fieldIndex == 12) ):
+                    #d_ave_gt
+                    if(fieldIndex == 4):
+                        if(self.bundleData[4] > ruleField or ruleField=='*'):
+                            ctr = ctr+1
+                    #d_min_gt
+                    elif(fieldIndex == 7):
+                        if(self.bundleData[5] > ruleField or ruleField=='*'):
+                            ctr = ctr+1
+                    #d_max_gt
+                    elif(fieldIndex == 10):
+                        if(self.bundleData[6] > ruleField or ruleField=='*'):
+                            ctr = ctr+1
+
+                    # d_ave_lt
+                    elif(fieldIndex == 6):
+                        if(self.bundleData[4] < ruleField or ruleField=='*'):
+                            ctr = ctr+1
+                    # d_min_lt
+                    elif(fieldIndex == 9):
+                        if(self.bundleData[5] < ruleField or ruleField=='*'):
+                            ctr = ctr+1
+                    #d_max_lt
+                    elif(fieldIndex == 12):
+                        if(self.bundleData[6] < ruleField or ruleField=='*'):
+                            ctr = ctr+1
+                    else:
+                        pass
+
+                else(self.bundleData[fieldIndex] == ruleField or ruleField=='*'):
                     # print "fieldIndex: " + str(fieldIndex) + " ruleField: " + str(ruleField) + " bundleData: " + self.bundleData[fieldIndex]                        
                     ctr = ctr+1
              
@@ -109,10 +143,10 @@ class FlowManager:
         return matchedFlow
 
     def createNewFlow(self, add_flow):
+        # aList.insert( index_to_be_inserted/rule_no, flow_object)
         self.flowTable.append(add_flow)
         # aList = [123, 'xyz', 'zara', 'abc']
         # aList.insert( 3, 2009)
-
         newRuleNo = self.getFlowTableLength()+1
         print "newRuleNo", newRuleNo
         newRule = [newRuleNo]
@@ -139,17 +173,17 @@ class FlowManager:
         # Insert IP_address here
         # data = json.dumps({'name':'Test connection', 'description':'Here here'})
         r = requests.post(server_url, bundleJSON)
-        print r.json()
+        print r
 
     def sync(self):
-        server_url="http://sd-dtn-controller.herokuapp.com/post"
+        server_url="http://sd-dtn-controller.herokuapp.com/sync"
         r = requests.get(url = server_url)
         # print "r\n\n", r
         # print "status_code:\n\n", r.status_code
         # print "headers\n\n", r.headers
         # print "Content-Type\n\n", r.headers['Content-Type']
-        print "Content\n\n", r.content
-
+        print "Content:\n", r.content
+        # Send back ung flow list via url, tapos get request as params
 
 
 
