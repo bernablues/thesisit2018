@@ -1,3 +1,35 @@
+# Feb 25 2018
+# ========================================
+# Mock data(Nabangga na)
+
+# Controller table
+# controllerTable = [ipAddr, flowTable]
+# controllerTable = ['172.24.1.1', flowTable]
+
+# -Yung ineexpect na ibabato pabalik to mobiles kapag install flow
+# #flowTable_final = [flowID, priorityNo, type, bundleSeq, sid, ipAddr, d_ave_gt, d_ave_eq, d_ave_lt, d_min_gt, d_min_eq, d_min_lt, d_max_gt, d_max_eq, d_max_lt, action]
+
+# #flowTable_final = [['1', '1', '1', '1', '1', '172.24.1.1', '5', '5', '5', '7', '7' , '7', '10', '10', '10', '2'], ['1', '1', '1', '1', '1', '172.24.1.1', '6', '6', '6', '8', '8' , '8', '11', '11', '11', '2'], ['1', '1', '1', '1', '1', '172.24.1.2', '1', '1', '1', '9', '9' , '9', '11', '11', '11', '1'], ['1', '1', '1', '1', '1', '172.24.1.1', '5', '5', '5', '7', '7' , '7', '10', '10', '10', '0'], ['1', '1', '1', '1', '1', '172.24.1.1', '5', '5', '5', '7', '7' , '7', '11', '11', '11', '1']]
+
+# -yung ieexpect ng controller kapag packet in
+# #bundleData_final = [type, bundleSeq, sid, ipAddr, averageData, minData, maxData]
+# #bundleData_final = ['1', '1', '1', '172.24.1.1', '5', '5', '5']
+
+# ========================================
+# Mock data (Di pa nabangga)
+# Yung working for the demo version
+
+# Server flow table
+# #flowTable_final = [priorityNo, type, bundleSeq, sid, ipAddr, dataSummary, action]
+# flowTable_master=[['1', '1', '4', '1', '172.24.1.2', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+# #bundleData_final = ['1', '1', '1', '172.24.1.1', '']
+
+# ===========================================================================
+
+
+# #bundleData_final = [type, bundleSeq, sid, ipAddr, averageData, minData, maxData]
+# #flowTable_final = [flowID, priorityNo, type, bundleSeq, sid, ipAddr, d_ave_gt, d_ave_eq, d_ave_lt, d_min_gt, d_min_eq, d_min_lt, d_max_gt, d_max_eq, d_max_lt, action]
+
 #bundleData = [type, bundleSeq, sid, ipAddr, dataSummary (eto yung minMaxAve, etc)]
 #flowTable = [ruleNo, type, bundleSeq, sid, ipAddr, dataSummary (eto yung minMaxAve, etc), action]
   
