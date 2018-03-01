@@ -41,7 +41,7 @@ import requests, json
 
 class FlowManager:
 
-    def __init__(self, flowTable):
+    def __init__(self, flowTable = []):
         self.flowTable = flowTable
 
 
@@ -93,6 +93,34 @@ class FlowManager:
 
         return matchedFlowAction
 
+    def getFlowIDs(self, bundleData):
+        self.bundleData = bundleData
+        rule_length = len(self.flowTable[0][1:-1])
+        # matchedFlowAction = 'No Flow Action Found'
+        # Iterates per row
+        flowIDs = ""
+
+        for ruleIndex, rule in enumerate(self.flowTable):
+            # print "==="
+            x = len(self.flowTable)-1
+            print "ruleIndex:", ruleIndex
+            print "x", x
+            if (ruleIndex == (x-1)):
+                flowIDs = flowIDs + str(rule[0])
+            else:
+                flowIDs = str(flowIDs) + str(rule[0]) + ","
+                # flowIDs = str(flowIDs + ","
+            
+            print "flowIDs", flowIDs     
+
+            # print "==="
+            # print ""
+
+            # if(len(self.flowTable)) 
+            # flowIDs = str(self.flowTable[][]) + ","
+
+        return None
+
     def __getMatchedFlowIndex(self):
         matchedFlowIndex = __getIntersection().index(self.bundleData)
         print "index ng intersection", matchedFlowIndex
@@ -113,12 +141,13 @@ class FlowManager:
         # aList = [123, 'xyz', 'zara', 'abc']
         # aList.insert( 3, 2009)
 
-        newRuleNo = self.getFlowTableLength()+1
-        print "newRuleNo", newRuleNo
-        newRule = [newRuleNo]
+        # newRuleNo = self.getFlowTableLength()+1
+        # print "newRuleNo", newRuleNo
+        # newRule = [newRuleNo]
+
         # param ng add flow
         # rule_na_pinass = ['3', '5', '2', '172.24.1.5', '']
-        newRule.extend(add_flow)
+        # newRule.extend(add_flow)
         # log me
 
     def editFlow(self, edit_flow, ruleNo):
@@ -134,48 +163,99 @@ class FlowManager:
         self.flowTable.remove(self.flowTable[ruleNo-1])
         # log me
 
-    def packetIn(self, bundleJSON):
-        server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
+    def packetIn(self, bundleData):
+        server_url = "https://sd-dtn-controller.herokuapp.com/packet_in"
         # Insert IP_address here
         # data = json.dumps({'name':'Test connection', 'description':'Here here'})
+
+        bundleDict = dict([['type', bundleData[0]], ['bundleSeq', bundleData[1]], ['sid', bundleData[2]], ['ipAddr', bundleData[3]], ['dataSummary', bundleData[4]]])
+        bundleJSON = json.dumps(bundleDict)
+        # print "type", type(bundleJSON)
+
         r = requests.post(server_url, bundleJSON)
-        print r.json()
+        print r.content
+        # print r
 
     def sync(self):
-        server_url="http://sd-dtn-controller.herokuapp.com/post"
-        r = requests.get(url = server_url)
+        server_url = "https://sd-dtn-controller.herokuapp.com/sync?ipAddr=172.24.1.1&flowIds="
+        r = requests.get(url=server_url)
         # print "r\n\n", r
+        # print "type", type(r)
         # print "status_code:\n\n", r.status_code
         # print "headers\n\n", r.headers
         # print "Content-Type\n\n", r.headers['Content-Type']
+        
         print "Content\n\n", r.content
+        print "Content-type\n\n", type(r.content) 
 
+        # y = json.dumps(r.content)
+        flowsToBeInstalled = json.loads(r.content)
+        newFlow = []
 
+        # print flowsToBeInstalled.items()
 
+        # for items in flowsToBeInstalled:
+        #     print "items:", items
+        #     for item in items:
+        #         print "item", item
+
+        # typecast to string pa ba?
+        newFlow.append(str(flowsToBeInstalled[-1]['flowId']))
+        newFlow.append(str(flowsToBeInstalled[-1]['priorityNo']))
+        newFlow.append(str(flowsToBeInstalled[-1]['type']))
+        newFlow.append(str(flowsToBeInstalled[-1]['bundleSeq']))
+        newFlow.append(str(flowsToBeInstalled[-1]['sid']))
+        newFlow.append(str(flowsToBeInstalled[-1]['ipAddr']))
+        newFlow.append(str(flowsToBeInstalled[-1]['dataSummary']))
+        newFlow.append(str(flowsToBeInstalled[-1]['action']))
+        
+        # print "newFlow", newFlow
+        return newFlow
 
     
 def main():
 
     # ==================================== v2 demo
     # bundleData=[['1', '4', '1', '172.24.1.1', '']]
-    bundleData=['1', '4', '1', '172.24.1.1', '']
-    flowTable_mini=[['1', '4', '1', '172.24.1.2', ''], ['1', '4', '1', '172.24.1.1', ''], ['1', '4', '1', '172.24.1.3', '']]
-    flowTable_master=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
-    
-    flow = FlowManager(flowTable_master)
-    
-    print "Getting Master Flow Table"
+    bundleData=['1', '4', '1', '172.24.1.3', '']
+    # flowTable_mini=[['1', '4', '1', '172.24.1.2', ''], ['1', '4', '1', '172.24.1.1', ''], ['1', '4', '1', '172.24.1.3', '']]
+    # flowTable_master=[['1', '1', '4', '1', '172.24.1.226', '', '1'], ['2', '1', '4', '1', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+    # flowTable_master = [[]]
+
+    # flow = FlowManager(flowTable_master)
+    flow = FlowManager()
+
+        
+    print "Printing Initial Flow Table"
     print(flow.getFlowTable())
 
-    print""
-    print "Get bundleData"
-    print(flow.getBundleData(bundleData))
+    # print""
+    # print "Get bundleData"
+    # print(flow.getBundleData(bundleData))
 
 
-    print""
-    print "Matching flows"
-    x = flow.matchFlow(bundleData)
-    print "Matched Flow Action", x
+    # print""
+    # print "Matching flows"
+    # x = flow.matchFlow(bundleData)
+    # print "Matched Flow Action", x
+
+
+    # print "getting FlowIDs"
+    # x = flow.getFlowIDs(bundleData)
+    # print x
+
+    print "\n\nSynchronizing"
+    x = flow.sync()
+
+    print "Installing New Flow"
+    flow.createNewFlow(x)
+
+    print "\nGetting Updated Flow Table\n"
+    print flow.getFlowTable()
+
+    print "\n\nPacket In"
+    flow.packetIn(bundleData)
+    
 
 if __name__ == "__main__":
     main()
