@@ -23,7 +23,7 @@ class DataFactory:
         print '========'
 
     def generateEntry(self):
-        data = 'x' * self.dataSize
+        data = '1' * self.dataSize
         timestamp = str(datetime.datetime.now())
         entry = [timestamp, str(self.seqNumber), data]
         self.seqNumber += 1

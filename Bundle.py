@@ -16,7 +16,6 @@ class Bundle:
             bundleData[3] = ''
         self.sid = str(bundleData[2])
         self.payload = str(bundleData[3])
-        print "Bundle: " + self.payload
 
         self.action = '2'
 
