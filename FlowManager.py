@@ -137,12 +137,12 @@ class FlowManager:
     def packetIn(self, bundleJSON):
         server_url="http://sd-dtn-controller.herokuapp.com/packet_in"
         # Insert IP_address here
-        # data = json.dumps({'name':'Test connection', 'description':'Here here'})
+        data = json.dumps({'name':'Test connection', 'description':'Here here'})
         r = requests.post(server_url, bundleJSON)
         print r.json()
 
     def sync(self):
-        server_url="http://sd-dtn-controller.herokuapp.com/post"
+        server_url="http://sd-dtn-controller.herokuapp.com/sync?ipAddr=172.24.1.1&flowIds=1,2,3"
         r = requests.get(url = server_url)
         # print "r\n\n", r
         # print "status_code:\n\n", r.status_code

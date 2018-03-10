@@ -90,7 +90,7 @@ class Mule:
                 fromAddress, fromPort = fromSocket
                 self.bfi.setToAddress(fromAddress)
                 bundle = Bundle(bundleData)
-                flowTable=[['*', '*', '*', '*', '172.24.1.10', '', '2'], ['*', '*', '*', '*', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
+                flowTable=[['*', '*', '*', '*', '172.24.1.10', '', '0'], ['*', '*', '*', '*', '172.24.1.1', '', '0'], ['3', '1', '4', '1', '172.24.1.3', '', '5']]
                 flowManager = FlowManager(flowTable)
 
                 data = [bundle.getType(), bundle.getSeq(), bundle.getSID(), fromAddress, '']
@@ -143,4 +143,4 @@ def test():
     flowManager.sync()
 
 if __name__ == "__main__":
-    test()
+    main()
