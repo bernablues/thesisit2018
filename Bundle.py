@@ -17,7 +17,11 @@ class Bundle:
         self.sid = str(bundleData[2])
         self.payload = str(bundleData[3])
 
-        self.action = '2'
+        self.averageData = str(bundleData[4])
+        self.minData = str(bundleData[5])
+        self.maxData = str(bundleData[6])
+
+        self.action = ''
 
     def getBundleProperties(self):
         return [self.type, self.sid, self.payload]
@@ -60,7 +64,7 @@ class Bundle:
 
 
     def toString(self):
-        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.action)
+        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.averageData) + ' ' + str(self.minData) + ' ' + str(self.maxData) + ' ' + str(self.action)
 
     def toData(self):
         return [str(self.sid), str(self.payload)]
