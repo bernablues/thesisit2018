@@ -35,11 +35,25 @@ class Sensor:
 
         self.currentSeq = 1
 
+    def getDataSummary(self, dataBundle):
+        data = dataBundle[1]
+        numbers = []
+
+
+        for i in range(len(data)):
+            numbers.append(int(data[i][2]))
+
+        ave = sum(numbers)/len(numbers)
+        minData = min(numbers)
+        maxData = max(numbers)
+
+        return (ave, minData, maxData)
 
     def sendNext(self):
-
         data = self.dataMan.getData(True)
         dataBundle = self.appendHeaders(1, data)
+        dataSummary = self.getDataSummary(dataBundle)
+        dataBundle = (dataBundle[0], dataBundle[1], dataSummary)
         bundle = Bundle(dataBundle)
         self.bfi.sendBundle(bundle)
         return bundle

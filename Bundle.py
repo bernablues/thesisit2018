@@ -47,8 +47,12 @@ class Bundle:
         seq = bundleData[1]
         sid = bundleData[2]
         data = ''
-        data = ''.join(bundleData[3:])
-        return [bundleType, seq, sid, data]
+        data = ''.join(bundleData[3:-4])
+        maxData = bundleData[-1]
+        minData = bundleData[-2]
+        aveData = bundleData[-3]
+
+        return [bundleType, seq, sid, data, aveData, minData, maxData]
 
     def tupleToList(self, tupleData):
         headers = tupleData[0]
@@ -59,12 +63,17 @@ class Bundle:
         for each in tupleData[1]:
             dataList = [str(x) for x in each]
             data += ''.join(dataList)
-        bundleData = [bundleType, seq, sid, data]
+
+        average = tupleData[2][0]
+        minData = tupleData[2][1]
+        maxData = tupleData[2][2]
+
+        bundleData = [bundleType, seq, sid, data, average, minData, maxData]
         return bundleData
 
 
     def toString(self):
-        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.averageData) + ' ' + str(self.minData) + ' ' + str(self.maxData) + ' ' + str(self.action)
+        return str(self.type) + ' ' + str(self.seq)+ ' ' + str(self.sid) + ' ' + self.payload + ' ' + str(self.averageData) + ' ' + str(self.minData) + ' ' + str(self.maxData)
 
     def toData(self):
         return [str(self.sid), str(self.payload)]
