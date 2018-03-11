@@ -6,10 +6,10 @@ MYSQL:
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
   PASSWORD: 'password'
-  COLUMNS: ['type', 'seq', 'sid', 'payload', 'action']
+  COLUMNS: ['type', 'seq', 'sid', 'payload', 'averageData', 'minData', 'maxData', 'action']
 
 MAX_ACK_TIMEOUT: 5
-WIRELESS_INTERFACE: 'wlp2s0'
+WIRELESS_INTERFACE: 'wlan0'
 
 MAX_DATA_ENTRIES: 50
 DROPPING_PROTOCOL: 0
