@@ -47,7 +47,7 @@ class Bundle:
         seq = bundleData[1]
         sid = bundleData[2]
         data = ''
-        data = ''.join(bundleData[3:-4])
+        data = ''.join(bundleData[3])
         maxData = bundleData[-1]
         minData = bundleData[-2]
         aveData = bundleData[-3]
@@ -63,7 +63,7 @@ class Bundle:
         for each in tupleData[1]:
             dataList = [str(x) for x in each]
             data += ''.join(dataList)
-
+        data = ''.join(data.split())
         average = tupleData[2][0]
         minData = tupleData[2][1]
         maxData = tupleData[2][2]

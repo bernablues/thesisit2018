@@ -3,6 +3,7 @@ import sys
 import time
 import threading
 import yaml
+import datetime
 from DataFactory import DataFactory
 from DatabaseInterface import DatabaseInterface
 from ConnectionManager import ConnectionManager
@@ -112,11 +113,16 @@ class Station:
 
             fromAddress, fromPort = fromSocket
             self.bfi.setToAddress(fromAddress)
+            print 'bundleData:', bundleData
             bundle = Bundle(bundleData)
             bundle_seq = bundle.getSeq()
             data = self.dataMan.sliceData(bundle.toData()[1])
+            print 'bundle:', bundle.toString()
+            print 'data:', data
+            current_time = str(datetime.datetime.now())
             for each in data:
                 each.append(bundle_seq)
+                each.append(current_time)
                 self.dataMan.insertData(each)
             self.acknowledge(bundle)
 
