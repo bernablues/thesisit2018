@@ -50,7 +50,7 @@ class Sensor:
         return (ave, minData, maxData)
 
     def sendNext(self):
-        data = self.dataMan.getData(True)
+        data = self.dataMan.getData()
         dataBundle = self.appendHeaders(1, data)
         dataSummary = self.getDataSummary(dataBundle)
         dataBundle = (dataBundle[0], dataBundle[1], dataSummary)
@@ -94,6 +94,7 @@ class Sensor:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:
+                self.dataMan.getData(True)
                 fromAddress = bundleData[1]
                 bundleData = bundleData[0]
                 if bundleData.split()[0] == '0':

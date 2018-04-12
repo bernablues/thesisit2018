@@ -51,7 +51,7 @@ class Mule:
         return bundleData
 
     def sendNext(self):
-        data = self.dataMan.getBundle(True)
+        data = self.dataMan.getBundle()
         if not data:
             self.conman.terminateConnection()
             return data
@@ -69,6 +69,7 @@ class Mule:
                 self.resendBundle(bundle)
                 terminated = self.conman.acknowledgementTimeout()
             else:
+                self.dataMan.getBundle(True)
                 fromAddress = bundleData[1]
                 bundleData = bundleData[0]
                 print "Current SEQ" + self.currentSeq
