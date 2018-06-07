@@ -6,8 +6,6 @@
 # number of seconds to send data
 import random
 import time
-import logging
-from SDTNLogger import SDTNLogger
 
 class DataManager:
     DROP_FIRST_PROTOCOL = 0
@@ -16,12 +14,6 @@ class DataManager:
     DROP_CURRENT_PROTOCOL = 3
 
     def __init__(self, maxEntries, droppingProtocol, dbInterface, bundleSize, experiments=None):
-        self.DataMan_logger = SDTNLogger(self.__class__.__name__, experiments, 'INFO')
-        self.DataMan_logger.classLog('Initializing DataMan...', 'INFO')
-        
-        self.dropDataTable_logger = SDTNLogger('dropDataTable', experiments, 'INFO')
-        self.dropDataTable_logger.classLog('Initializing DataMan...', 'INFO')
-
         self.maxEntries = maxEntries
         self.droppingProtocol = droppingProtocol
         self.dbInterface = dbInterface
@@ -34,41 +26,30 @@ class DataManager:
         print '========'
 
     def equalizeMaxEntries(self):
-        self.DataMan_logger.classLog('Equalizing max_entries...', 'INFO')
         while self.isBufferFull():
             self.dropLast()
         return True
 
     def insertData(self, data, seq_number = None):
-        self.DataMan_logger.classLog('Inserting data...', 'INFO')
         if self.isBufferFull():
             self.dropData()
         if self.hasData(data[1]):
             return True
 
         self.dbInterface.insertRow(data)
-        self.DataMan_logger.classLog('Successfully inserted data.', 'INFO')        
         return True        
 
     def printData(self):
         pass
 
     def dropFirst(self):
-        self.DataMan_logger.classLog('NULL,Dropping:, FIRST_DATA...', 'WARNING')
-        self.dropDataTable_logger.classLog('NULL,Dropping:, FIRST_DATA...', 'WARNING')
         first = self.dbInterface.getRows(1)
         self.dbInterface.deleteRows(1)
-        self.DataMan_logger.classLog('NULL,Successfully dropped:,FIRST_DATA.', 'WARNING')
-        self.dropDataTable_logger.classLog('NULL,Successfully dropped:,FIRST_DATA.', 'WARNING')
         return first
 
     def dropLast(self):
-        self.DataMan_logger.classLog('NULL,Dropping:, LAST_DATA...', 'WARNING')
-        self.dropDataTable_logger.classLog('NULL,Dropping:, LAST_DATA...', 'WARNING')
         last = self.dbInterface.getRows(1, True)
         self.dbInterface.deleteRows(1, True)
-        self.DataMan_logger.classLog('NULL,Successfully dropped:,LAST_DATA.', 'WARNING')
-        self.dropDataTable_logger.classLog('NULL,Successfully dropped:,LAST_DATA.', 'WARNING')
         return last
 
     # def dropRandom(self):
@@ -79,8 +60,6 @@ class DataManager:
     #     return entry
 
     def dropData(self):
-        self.DataMan_logger.classLog('Dropping data...', 'WARNING')
-        self.dropDataTable_logger.classLog('Dropping data...', 'WARNING')
         droppedData = None
         if self.droppingProtocol == self.DROP_FIRST_PROTOCOL:
             droppedData = self.dropFirst()
@@ -95,17 +74,11 @@ class DataManager:
     def isBufferFull(self):
         currentEntries = self.dbInterface.getRowCount()
         if self.maxEntries <= currentEntries:
-            self.DataMan_logger.classLog('NULL,NULL,NULL,Buffer is full:,TRUE.', 'WARNING')
-            self.dropDataTable_logger.classLog('NULL,NULL,NULL,Buffer is full:,TRUE.', 'WARNING')
             return True
         else:
-            self.DataMan_logger.classLog('NULL,NULL,NULL,Buffer is full:,FALSE.', 'INFO')
-            self.dropDataTable_logger.classLog('NULL,NULL,NULL,Buffer is full:,FALSE.', 'INFO')
             return False
 
     def checkBundleSizeLimit(self):
-        self.DataMan_logger.classLog('Checking BundleSize limit...', 'INFO')
-        self.dropDataTable_logger.classLog('Checking BundleSize limit...', 'INFO')
         rowsAvailabe = self.dbInterface.getRowCount()
         if self.bundleSize <= rowsAvailabe:
             return True
@@ -124,7 +97,6 @@ class DataManager:
 
     def getData(self, deleteData = False):
         checkDataTimeout = 0
-        self.DataMan_logger.classLog('Getting data...', 'INFO')
         while not self.checkBundleSizeLimit():
             time.sleep(2)
             checkDataTimeout += 1
@@ -136,12 +108,10 @@ class DataManager:
         data = self.padZeroesToDataSeq(data)
         if deleteData:
             self.dbInterface.deleteRows(self.bundleSize)
-        self.DataMan_logger.classLog('Get data successful.', 'INFO')
         return data
 
     def getBundle(self, deleteBundle = False):
         checkDataTimeout = 0
-        self.DataMan_logger.classLog('Getting data...', 'INFO')
         time.sleep(2)
         checkDataTimeout += 1
         if checkDataTimeout == 5:
@@ -149,7 +119,6 @@ class DataManager:
         data = self.dbInterface.getRows(1)
         if deleteBundle:
             self.dbInterface.deleteRows(1)
-        self.DataMan_logger.classLog('Get data successful.', 'INFO')
         data = str(data[0])[1:-1].split(', ')
         data[0] = data[0][0:-1]
         data[1] = data[1][0:-1]
@@ -174,7 +143,6 @@ class DataManager:
         return slicedData
 
     def getAllData(self, seqNumbers = None):
-        self.DataMan_logger.classLog('Get data successful.', 'INFO')
 
         if seqNumbers:
             results = self.dbInterface.getRowsFromSeqNumbers(seqNumbers)
