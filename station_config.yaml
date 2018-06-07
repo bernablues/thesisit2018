@@ -6,7 +6,9 @@ MYSQL:
   DATABASE_NAME: 'sdtn'
   USER: 'sdtn'
   PASSWORD: 'password'
+
   COLUMNS: ['timestamp', 'seq_number', 'data', 'bundle_seq', 'time_received']
+
 
 MAX_ACK_TIMEOUT: 5
 WIRELESS_INTERFACE: 'wlan0'

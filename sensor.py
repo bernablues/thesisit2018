@@ -26,7 +26,9 @@ class Sensor:
         self.MYSQL_PASSWORD = cfg['MYSQL']['PASSWORD']
         self.DATABASE_COLUMNS = cfg['MYSQL']['COLUMNS']
 
+
         self.conman = ConnectionManager(cfg['MAX_ACK_TIMEOUT'], cfg['WIRELESS_INTERFACE'], self.HELLO_PORT, self.DATA_PORT)
+
         self.dbi = DatabaseInterface(self.TABLE_NAME, self.DATABASE_NAME, self.MYSQL_USER, self.MYSQL_PASSWORD, self.DATABASE_COLUMNS)
         self.dataMan = DataManager(cfg['MAX_DATA_ENTRIES'], cfg['DROPPING_PROTOCOL'], self.dbi, cfg['DATA_TO_BUNDLE_SIZE'])
         self.dataFactory = DataFactory(cfg['DATA_GENERATED_SIZE'], cfg['TIME_TO_GENERATE_DATA'], self.SID, self.dataMan)

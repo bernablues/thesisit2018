@@ -8,6 +8,8 @@ from BundleFlowInterface import BundleFlowInterface
 
 from DatabaseInterface import DatabaseInterface
 
+from DatabaseInterface import DatabaseInterface
+
 class ConnectionManager:
     def __init__(self, maxAckTimeout, ifname, helloPort, dataPort, dataMan = None, dataToBundleSize = 5, experiments=None):
         self.dataToBundleSize = dataToBundleSize
